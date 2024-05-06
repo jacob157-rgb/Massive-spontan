@@ -2,10 +2,10 @@ import './App.css'
 
 function RenderName(props) {
   const { name, gender } = props;
-  const color = gender === 'female' ? 'lightcoral' : 'midnightblue';
+  // const color = gender === 'female' ? 'text-red-300' : 'text-sky-400';
 
   return (
-    <div style={{ color: color }}>
+    <div className={gender === 'female' ? 'text-red-300' : 'text-sky-400'}>
       {name}
     </div>
   )
