@@ -1,66 +1,34 @@
 const express = require("express");
 const app = express();
-const db = require("./db");
-const port = 3000;
+const userController = require("./controllers/userController");
+const errorhandler = require("./middleware/errorHandler");
+const logger = require("./middleware/logger");
+const updload = require("./utils/upload");
 
+const PORT = 3000;
+
+// Middleware
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-
+// ROUTE http://localhost:8000/
 app.get("/", (req, res) => {
-  res.send("ExpressJS is Running!");
-});
-
-app.get("/api/users", (req, res) => {
-  db.query("SELECT * FROM users", (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      res.json({ result });
-    }
-  });
-});
-app.post("/api/users", (req, res) => {
-  const { name, email, password } = req.body;
   res.json({
-    name: name,
-    email: email,
-    password: password,
+    message: "Berhasil melakukan routing✨",
   });
 });
 
-app.put("/api/users/:id", (req, res) => {
-  const { id } = req.params;
-  const { name, email, password } = req.body;
+// ROUTING Users
+app.get("/api/users", userController.getAllUsers);
+app.post("/api/users", userController.createNewUser);
+app.put("/api/users/:id", userController.updateUserById);
+app.delete("/api/users/:id", userController.deleteUserById);
+app.get("/api/users/:id", userController.getUserById);
 
-  db.query(
-    "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?",
-    [name, email, password, id],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result);
-        res.json({ message: "User updated successfully" });
-      }
-    }
-  );
+app.post("/file-upload", upload.single("file"), (req, req) => {
+  res.json({ message: "File uploaded!" });
 });
 
-app.delete("/api/users/:id", (req, res) => {
-  const { id } = req.params;
-
-  db.query("DELETE FROM users WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      res.json({ message: "User deleted successfully" });
-    }
-  });
-});
+app.listen(PORT, () =>
+  console.log(`Server is running on http://localhost:${PORT}`)
+);

@@ -1,24 +1,18 @@
-import "./App.css";
-
-function RenderName(props) {
-  const { name, gender } = props;
-  const color = gender === "female" ? "lightcoral" : "midnightblue";
-
-  return (
-    <>
-      <div style={{ color: color }}>{name}</div>
-      <h1 className="text-red-600">Halo</h1>
-    </>
-  );
-}
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
+import Landing from "./pages/landing/Landing";
+import Explore from "./pages/explore/Explore";
 function App() {
   return (
-    <div>
-      <RenderName name="Hellen Keller" gender="female" />
-      <RenderName name="Marie Curie" gender="female" />
-      <RenderName name="Albert Enstein" gender="male" />
-    </div>
+    <>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Landing />} />
+          <Route exact path="/explore" element={<Explore />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
