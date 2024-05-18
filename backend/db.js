@@ -6,14 +6,13 @@ const sequelize = new Sequelize("massive", "root", "", {
   dialect: "mysql",
 });
 
-//sequelize connects to database
 sequelize
   .authenticate()
   .then(() => {
     console.log("Connected to MySQL");
   })
   .catch((err) => {
-    console.log("Unable to connect to MySQL" + err);
+    console.log("Unable to connect to MySQL: " + err);
   });
 
 const User = sequelize.define(
@@ -46,7 +45,7 @@ const User = sequelize.define(
       allowNull: false,
     },
     no_hp: {
-      type: DataTypes.INTEGER(15),
+      type: DataTypes.STRING(15), // Change to STRING for phone number
       allowNull: false,
     },
     tgl_lahir: {
@@ -63,9 +62,8 @@ const User = sequelize.define(
     },
   },
   {
-    timestamps: true, // timestamp
-    freezeTableName: false, // prullar table name
-    //tableName: "users", // table name
+    timestamps: true,
+    freezeTableName: false,
   }
 );
 
@@ -143,7 +141,7 @@ const CP = sequelize.define(
       allowNull: false,
     },
     no_hp: {
-      type: DataTypes.INTEGER(15),
+      type: DataTypes.STRING(15), // Change to STRING for phone number
       allowNull: false,
     },
   },
@@ -162,7 +160,7 @@ const Rekening = sequelize.define(
       autoIncrement: true,
     },
     no_rek: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     nama_bank: {
@@ -267,20 +265,6 @@ const Event = sequelize.define(
         key: "id",
       },
     },
-    id_tag: {
-      type: DataTypes.BIGINT,
-      references: {
-        model: Tag,
-        key: "id",
-      },
-    },
-    id_penyelenggara: {
-      type: DataTypes.BIGINT,
-      references: {
-        model: Penyelenggara,
-        key: "id",
-      },
-    },
     id_cp: {
       type: DataTypes.BIGINT,
       references: {
@@ -348,13 +332,81 @@ const Event = sequelize.define(
   }
 );
 
+const Tiket = sequelize.define(
+  "tiket",
+  {
+    id: {
+      type: DataTypes.BIGINT,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    nama: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    kategori: {
+      type: DataTypes.ENUM("paid", "free"),
+      allowNull: false,
+    },
+    harga: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
+    deskripsi: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    stok: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    mulai: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    berakhir: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    isPublish: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    timestamps: false,
+    freezeTableName: true,
+  }
+);
+
+// Define associations
+User.hasMany(Penyelenggara, { foreignKey: "id_user" });
+Rekening.hasMany(Penyelenggara, { foreignKey: "id_rekening" });
 Penyelenggara.belongsTo(User, { foreignKey: "id_user" });
 Penyelenggara.belongsTo(Rekening, { foreignKey: "id_rekening" });
+
+Format.hasMany(Event, { foreignKey: "id_format" });
+Topik.hasMany(Event, { foreignKey: "id_topik" });
+CP.hasMany(Event, { foreignKey: "id_cp" });
 Event.belongsTo(Format, { foreignKey: "id_format" });
 Event.belongsTo(Topik, { foreignKey: "id_topik" });
-Event.belongsTo(Tag, { foreignKey: "id_tag" });
-Event.belongsTo(Penyelenggara, { foreignKey: "id_penyelenggara" });
 Event.belongsTo(CP, { foreignKey: "id_cp" });
+
+Event.belongsToMany(Penyelenggara, {
+  through: "PenyelenggaraEvent",
+  foreignKey: "id_event",
+});
+Penyelenggara.belongsToMany(Event, {
+  through: "PenyelenggaraEvent",
+  foreignKey: "id_penyelenggara",
+});
+
+Event.belongsToMany(Tag, { through: "TagEvent", foreignKey: "id_event" });
+Tag.belongsToMany(Event, { through: "TagEvent", foreignKey: "id_tag" });
+
+Event.belongsToMany(Tiket, { through: "TiketEvent", foreignKey: "id_event" });
+Tiket.belongsToMany(Event, { through: "TiketEvent", foreignKey: "id_tiket" });
 
 sequelize
   .sync({ force: true })
@@ -364,38 +416,3 @@ sequelize
   .catch((err) => {
     console.error("An error occurred while synchronizing the models:", err);
   });
-
-// const UserSeeder = [
-//   {
-//     nama: "Administrator",
-//     email: "admin@gmail.com",
-//     password: "admin",
-//     no_hp: "123",
-//     tgl_lahir: "01-01-2000",
-//     gender: "L",
-//     coins: "10000",
-//   },
-//   {
-//     nama: "Jacob",
-//     email: "jacob@gmail.com",
-//     password: "jacob",
-//     no_hp: "123",
-//     tgl_lahir: "01-15-2000",
-//     gender: "L",
-//     coins: "100000",
-//   },
-// ];
-
-// User.sync({
-//   force: true, // drop table if exist
-//   //   alter: true, // perform necessary sync
-// })
-//   .then(() => {
-//     return User.bulkCreate(UserSeeder, { validate: true });
-//   })
-//   .then(() => {
-//     console.log("SUCCESS creating user table");
-//   })
-//   .catch((err) => {
-//     console.log("ERROR creating user table" + err);
-//   });
