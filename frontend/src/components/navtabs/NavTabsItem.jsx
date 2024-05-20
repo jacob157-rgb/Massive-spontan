@@ -6,9 +6,9 @@ function NavTabsItem({ label }) {
       className={({ isActive }) =>
         isActive
           ? "p-4 border-b-4 border-secondary"
-          : "p-4 hover:border-b-4 border-b-4 border-transparent hover:border-secondary"
+          : "p-4 hover:border-b-4 border-b-4 font-extralight hover:font-normal border-transparent hover:border-secondary"
       }>
-      <h1 className="flex text-lg text-white">{label}</h1>
+      <h1 className="flex text-white">{label}</h1>
     </NavLink>
   );
 }

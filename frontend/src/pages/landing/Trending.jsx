@@ -26,11 +26,11 @@ const trendingData = [
 
 function Trending() {
   return (
-    <div className="h-auto px-40 py-12 mx-auto border-b-2 border-black">
+    <div className="h-auto px-4 py-5 mx-auto lg:px-32">
       <div className="mb-5">
         <TextUnderline label="Trending" />
       </div>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-5 pb-5 border-b border-black md:grid-cols-2 lg:grid-cols-3">
         {trendingData.map((item) => (
           <TrendingCard
             key={item.no}
