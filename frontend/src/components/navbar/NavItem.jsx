@@ -6,7 +6,8 @@ function NavItem({ to, label, icon }) {
       to={to}
       className={({ isActive }) =>
         isActive ? "p-3" : "p-3 hover:bg-highlight"
-      }>
+      }
+    >
       <h1 className="flex items-center text-white">
         {label}
         <span className="ml-2 material-symbols-outlined">{icon}</span>
@@ -15,14 +16,4 @@ function NavItem({ to, label, icon }) {
   );
 }
 
-function Navigation() {
-  return (
-    <div className="flex gap-5">
-      <NavItem to="/jelajahi" label="Jelajahi" icon="explore" />
-      <NavItem to="/buat-event" label="Buat Event" icon="calendar_add_on" />
-      <NavItem to="/login" label="Sign In/Register" icon="login" />
-    </div>
-  );
-}
-
-export default Navigation;
+export default NavItem;

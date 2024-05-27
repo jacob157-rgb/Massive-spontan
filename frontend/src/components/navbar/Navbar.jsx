@@ -1,16 +1,35 @@
+import { useState } from "react";
 import SearchBar from "./SearchBar";
-import NavItem from "./NavItem";
+import Navigation from "./Navigation";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="flex items-center justify-between w-full px-32 py-5 mx-auto bg-primary">
-      <div className="flex items-center flex-1 gap-10">
-        <img className="w-auto h-10" src="/src/assets/img/logo.png" alt="" />
-        <div className="flex-1 mr-10">
+    <nav className="flex items-center justify-between w-full px-6 py-4 mx-auto bg-primary lg:px-32">
+      <div className="flex items-center flex-1 gap-4 lg:gap-10">
+      <Link to="/"><img className="w-auto h-7 lg:h-10" src="/src/assets/img/logo.png" alt="Logo" /></Link>
+        <div className="flex-1 hidden mr-4 md:block lg:mr-10">
           <SearchBar placeholder="Search..." />
         </div>
       </div>
-      <NavItem className="w-50" />
+      <div className="hidden md:flex">
+        <Navigation />
+      </div>
+      <div className="md:hidden">
+        <button
+          className="text-white"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+      {isOpen && (
+        <div className="absolute left-0 right-0 z-10 p-4 top-[60px] bg-primary md:hidden">
+          <Navigation />
+        </div>
+      )}
     </nav>
   );
 }
