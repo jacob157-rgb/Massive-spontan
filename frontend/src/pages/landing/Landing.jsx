@@ -11,11 +11,11 @@ function Landing() {
   return (
     <>
       <Navbar />
-      <img src="/src/assets/img/carousel/carousel1.png" alt="" />
+      <img className="w-full h-auto" src="/src/assets/img/carousel/carousel1.png" alt="" />
       <NavTabs />
       <Trending></Trending>
       <Recomendation></Recomendation>
-      <img className="px-32" src="/src/assets/img/card/gp.png" alt="" />
+      <img className="w-full h-auto px-4 rounded-sm" src="/src/assets/img/card/gp.png" alt="" />
       <Carousel3></Carousel3>
       <Carousel2></Carousel2>
       <Carousel></Carousel>
