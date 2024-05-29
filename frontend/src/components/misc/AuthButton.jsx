@@ -4,7 +4,7 @@ function AuthButton({ label, link }) {
   const navigate = useNavigate();
 
   return (
-    <button onClick={() => navigate(link)} className="w-full h-auto p-2 md:p-4 text-lg font-normal text-center text-white rounded-sm bg-secondary">
+    <button onClick={() => navigate(link)} className="w-full h-auto px-2 py-2 text-lg font-normal text-center text-white rounded-sm md:p-3 bg-secondary">
       {label}
     </button>
   );

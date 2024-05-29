@@ -8,15 +8,13 @@ function Login() {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="flex bg-g1">
-        <img
-          className="self-center w-1/2 h-auto mx-auto"
-          src="/src/assets/img/logo.png"
-          alt="Logo"
-        />
+        <Link className="self-center w-1/2 h-auto mx-auto" to="/">
+          <img src="/src/assets/img/logo.png" alt="Logo" />
+        </Link>
       </div>
-      <div className="flex flex-col justify-center px-10 space-y-2 bg-white md:p-32 md:space-y-4">
+      <div className="flex flex-col justify-center px-10 space-y-2 bg-white md:p-20 md:space-y-4">
         <h1 className="mb-3 text-3xl font-bold md:mb-5 md:text-4xl">Masuk</h1>
-        <form className="w-full max-w-md mx-auto">
+        <form className="w-full mx-auto">
           <label
             htmlFor="email-address-icon"
             className="block mb-1 font-medium md:mb-2">
@@ -31,7 +29,7 @@ function Login() {
             <input
               type="text"
               id="email-address-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              className="block w-full px-3 py-2 border-2 ps-12 border-c1b"
               placeholder="email@email.com"
             />
           </div>
@@ -49,15 +47,23 @@ function Login() {
             <input
               type="password"
               id="password-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              className="block w-full px-3 py-2 border-2 ps-12 border-c1b"
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
             />
           </div>
           <AuthButton link="/login" label="Masuk" />
         </form>
-        <p className="text-sm">Tidak punya akun? <Link className="text-primary" to="/register">Daftar Disini</Link></p>
+        <p className="text-sm">
+          Tidak punya akun?{" "}
+          <Link className="text-primary" to="/register">
+            Daftar Disini
+          </Link>
+        </p>
         <StraightTrough label="Atau masuk menggunakan" />
-        <SocialButton icon="/src/assets/icons/google.svg" label="Masuk dengan Google" />
+        <SocialButton
+          icon="/src/assets/icons/google.svg"
+          label="Masuk dengan Google"
+        />
       </div>
     </div>
   );

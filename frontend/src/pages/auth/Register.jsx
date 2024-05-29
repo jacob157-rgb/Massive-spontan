@@ -8,17 +8,15 @@ function Register() {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="flex bg-g1">
-        <img
-          className="self-center w-1/2 h-auto mx-auto"
-          src="/src/assets/img/logo.png"
-          alt="Logo"
-        />
+        <Link className="self-center w-1/2 h-auto mx-auto" to="/">
+          <img src="/src/assets/img/logo.png" alt="Logo" />
+        </Link>
       </div>
-      <div className="flex flex-col justify-center px-10 space-y-2 bg-white md:p-32 md:space-y-4">
+      <div className="flex flex-col justify-center px-10 space-y-2 bg-white md:p-20 md:space-y-4">
         <h1 className="mb-3 text-3xl font-bold md:mb-5 md:text-4xl">Daftar</h1>
-        <form className="w-full max-w-md mx-auto">
+        <form className="w-full mx-auto">
           <label
-            htmlFor="email-address-icon"
+            htmlFor="username-icon"
             className="block mb-1 font-medium md:mb-2">
             Username
           </label>
@@ -30,8 +28,8 @@ function Register() {
             </div>
             <input
               type="text"
-              id="email-address-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              id="username-icon"
+              className="block w-full px-3 py-2 border-2 ps-12 border-c1b"
               placeholder="username"
             />
           </div>
@@ -47,9 +45,9 @@ function Register() {
               </span>
             </div>
             <input
-              type="text"
+              type="email"
               id="email-address-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              className="block w-full px-3 py-2 border-2 ps-12 border-c1b"
               placeholder="email@email.com"
             />
           </div>
@@ -67,12 +65,12 @@ function Register() {
             <input
               type="password"
               id="password-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              className="block w-full px-3 py-2 pl-12 border-2 border-c1b"
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
             />
           </div>
           <label
-            htmlFor="password-icon"
+            htmlFor="confirm-password-icon"
             className="block mb-1 font-medium md:mb-2">
             Konfirmasi Kata Sandi
           </label>
@@ -84,8 +82,8 @@ function Register() {
             </div>
             <input
               type="password"
-              id="password-icon"
-              className="block w-full p-2 md:p-3.5 pl-12 border-2 border-c1b"
+              id="confirm-password-icon"
+              className="block w-full px-3 py-2 pl-12 border-2 border-c1b"
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
             />
           </div>
