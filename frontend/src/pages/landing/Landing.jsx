@@ -1,3 +1,6 @@
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css/bundle";
 import Navbar from "../../components/navbar/Navbar";
 import NavTabs from "../../components/navtabs/NavTabs";
 import Trending from "./Trending";
@@ -7,19 +10,58 @@ import Carousel2 from "./Carousel2";
 import Carousel3 from "./Carousel3";
 import Footer from "../../components/footer/Footer";
 
+const banner = [
+  {
+    no: 1,
+    image: "/src/assets/img/carousel/carousel1.png",
+  },
+  {
+    no: 2,
+    image: "/src/assets/img/carousel/carousel2.png",
+  },
+  {
+    no: 3,
+    image: "/src/assets/img/carousel/carousel3.png",
+  },
+  {
+    no: 4,
+    image: "/src/assets/img/carousel/carousel4.png",
+  },
+];
+
 function Landing() {
   return (
     <>
       <Navbar />
-      <img className="w-full h-auto" src="/src/assets/img/carousel/carousel1.png" alt="" />
+      <Swiper
+        slidesPerView={1}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        modules={[Autoplay]}>
+        {banner.map((item) => (
+          <SwiperSlide key={item.no}>
+            <img
+              className="object-cover object-center w-full h-44 md:h-auto"
+              src={item.image}
+              alt={`Banner ${item.no}`}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <NavTabs />
-      <Trending></Trending>
-      <Recomendation></Recomendation>
-      <img className="w-full h-auto px-4 rounded-sm" src="/src/assets/img/card/gp.png" alt="" />
-      <Carousel3></Carousel3>
-      <Carousel2></Carousel2>
-      <Carousel></Carousel>
-      <Footer/>
+      <Trending />
+      <Recomendation />
+      <img
+        className="w-full h-auto px-4 rounded-sm"
+        src="/src/assets/img/card/gp.png"
+        alt=""
+      />
+      <Carousel3 />
+      <Carousel2 />
+      <Carousel />
+      <Footer />
     </>
   );
 }

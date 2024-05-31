@@ -30,7 +30,7 @@ function Trending() {
       <div className="mb-5">
         <TextUnderline label="Trending" />
       </div>
-      <div className="grid w-full grid-cols-1 gap-5 pb-5 border-b border-black md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-5 pb-5 border-b border-black lg:grid-cols-3">
         {trendingData.map((item) => (
           <TrendingCard
             key={item.no}
