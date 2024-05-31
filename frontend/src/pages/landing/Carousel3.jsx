@@ -1,4 +1,6 @@
 import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import TextUnderline from "../../components/misc/TextUnderline";
 import KotaCard from "../../components/card/KotaCard";
 import NextButton from "../../components/misc/NextButton";
@@ -9,17 +11,32 @@ const carouselData = [
   {
     no: 1,
     image: "/src/assets/img/kota/bali.png",
-    kota: "Bali"
+    kota: "Bali",
   },
   {
     no: 2,
     image: "/src/assets/img/kota/jogja.png",
-    kota: "Yogyakarta"
+    kota: "Yogyakarta",
   },
   {
     no: 3,
     image: "/src/assets/img/kota/jakarta.png",
-    kota: "Jakarta"
+    kota: "Jakarta",
+  },
+  {
+    no: 4,
+    image: "/src/assets/img/kota/jogja.png",
+    kota: "Yogyakarta",
+  },
+  {
+    no: 5,
+    image: "/src/assets/img/kota/jakarta.png",
+    kota: "Jakarta",
+  },
+  {
+    no: 6,
+    image: "/src/assets/img/kota/bali.png",
+    kota: "Bali",
   },
 ];
 
@@ -33,13 +50,24 @@ function Carousel() {
         <div className="absolute z-10 top-14 -left-7">
           <PrevButton />
         </div>
-        <div className="flex-1">
-          <div className="grid w-full grid-cols-1 gap-5 pb-5 border-b border-black md:grid-cols-2 lg:grid-cols-3">
-            {carouselData.map((item) => (
-              <KotaCard key={item.no} no={item.no} image={item.image} kota={item.kota}/>
-            ))}
-          </div>
-        </div>
+        <Swiper
+          spaceBetween={50}
+          slidesPerView={3}
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }}
+        >
+          {carouselData.map((item) => (
+            <SwiperSlide key={item.no}>
+              <KotaCard
+                no={item.no}
+                image={item.image}
+                kota={item.kota}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
         <div className="absolute z-10 top-14 -right-7">
           <NextButton />
         </div>
