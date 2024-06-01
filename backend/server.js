@@ -1,34 +1,40 @@
-const express = require("express");
+// server.js
+
+const express = require('express');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 const app = express();
-const userController = require("./controllers/userController");
-const errorhandler = require("./middleware/errorHandler");
-const logger = require("./middleware/logger");
-const updload = require("./utils/upload");
 
-const PORT = 3000;
+// Passport Google OAuth2 Strategy Configuration
+passport.use(new GoogleStrategy({
+    clientID: "687994941450-3v30s6vqj1avjqi384j7ita2jp2ctoog.apps.googleusercontent.com",
+    clientSecret: "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",
+    callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // This function is called after a successful authentication
+    // You can save user data to the database or generate JWT here
+    // For simplicity, we will generate JWT
+    const user = { id: profile.id, email: profile.emails[0].value };
+    const token = jwt.sign(user, 'your_jwt_secret');
+    done(null, token);
+  }
+));
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware for Passport Authentication
+app.use(passport.initialize());
 
-// ROUTE http://localhost:8000/
-app.get("/", (req, res) => {
-  res.json({
-    message: "Berhasil melakukan routing✨",
-  });
-});
+// Routes
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// ROUTING Users
-app.get("/api/users", userController.getAllUsers);
-app.post("/api/users", userController.createNewUser);
-app.put("/api/users/:id", userController.updateUserById);
-app.delete("/api/users/:id", userController.deleteUserById);
-app.get("/api/users/:id", userController.getUserById);
-
-app.post("/file-upload", upload.single("file"), (req, req) => {
-  res.json({ message: "File uploaded!" });
-});
-
-app.listen(PORT, () =>
-  console.log(`Server is running on http://localhost:${PORT}`)
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect to frontend with JWT token
+    res.redirect(`http://localhost:3000?token=${req.user}`);
+  }
 );
+
+app.listen(3000, () => console.log('Server running on port 3000'));
