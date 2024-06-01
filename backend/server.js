@@ -9,8 +9,8 @@ const app = express();
 
 // Passport Google OAuth2 Strategy Configuration
 passport.use(new GoogleStrategy({
-    clientID: "687994941450-3v30s6vqj1avjqi384j7ita2jp2ctoog.apps.googleusercontent.com",
-    clientSecret: "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",
+    clientID: "",
+    clientSecret: "",
     callbackURL: "http://localhost:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
