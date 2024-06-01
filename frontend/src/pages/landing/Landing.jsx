@@ -5,9 +5,9 @@ import Navbar from "../../components/navbar/Navbar";
 import NavTabs from "../../components/navtabs/NavTabs";
 import Trending from "./Trending";
 import Recomendation from "./Recomendation";
-import Carousel from "./Carousel";
-import Carousel2 from "./Carousel2";
-import Carousel3 from "./Carousel3";
+import BestSeller from "./BestSeller";
+import ComingSoon from "./ComingSoon";
+import Kota from "./Kota";
 import Footer from "../../components/footer/Footer";
 
 const banner = [
@@ -39,6 +39,7 @@ function Landing() {
           delay: 3000,
           disableOnInteraction: false,
         }}
+        loop={true}
         modules={[Autoplay]}>
         {banner.map((item) => (
           <SwiperSlide key={item.no}>
@@ -58,9 +59,9 @@ function Landing() {
         src="/src/assets/img/card/gp.png"
         alt=""
       />
-      <Carousel3 />
-      <Carousel2 />
-      <Carousel />
+      <Kota />
+      <ComingSoon />
+      <BestSeller />
       <Footer />
     </>
   );

@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "/src/assets/img/logo.png"; // Sesuaikan path dengan lokasi logo Anda
 
 function Footer() {
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+
+  const toggleDropdown = (setter) => {
+    setter((prev) => !prev);
+  };
+
   return (
     <>
-      <footer className="px-10 py-10 text-white bg-primary lg:px-32">
+      <footer className="px-4 py-10 text-white bg-primary lg:px-32">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
           <div>
-            <h1 className="mb-4 text-lg font-bold">Tentang Spotix</h1>
-            <ul>
+            <h1
+              className="mb-4 text-lg font-bold cursor-pointer lg:cursor-default"
+              onClick={() => toggleDropdown(setIsAboutOpen)}>
+              Tentang Spotix
+            </h1>
+            <ul className={`lg:block ${isAboutOpen ? "block" : "hidden"}`}>
               <li className="mb-2">
                 <Link to="/about" className="text-white">
                   Masuk
@@ -33,8 +46,12 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h1 className="mb-4 text-lg font-bold">Kategori</h1>
-            <ul>
+            <h1
+              className="mb-4 text-lg font-bold cursor-pointer lg:cursor-default"
+              onClick={() => toggleDropdown(setIsCategoryOpen)}>
+              Kategori
+            </h1>
+            <ul className={`lg:block ${isCategoryOpen ? "block" : "hidden"}`}>
               <li className="mb-2">
                 <Link to="/category/concerts" className="text-white">
                   Konser
@@ -58,8 +75,12 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h1 className="mb-4 text-lg font-bold">Lokasi Event</h1>
-            <ul>
+            <h1
+              className="mb-4 text-lg font-bold cursor-pointer lg:cursor-default"
+              onClick={() => toggleDropdown(setIsLocationOpen)}>
+              Lokasi Event
+            </h1>
+            <ul className={`lg:block ${isLocationOpen ? "block" : "hidden"}`}>
               <li className="mb-2">
                 <Link to="/locations/jakarta" className="text-white">
                   Jakarta
@@ -98,8 +119,12 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h1 className="mb-4 text-lg font-bold">Spotix Support</h1>
-            <ul>
+            <h1
+              className="mb-4 text-lg font-bold cursor-pointer lg:cursor-default"
+              onClick={() => toggleDropdown(setIsSupportOpen)}>
+              Spotix Support
+            </h1>
+            <ul className={`lg:block ${isSupportOpen ? "block" : "hidden"}`}>
               <li className="mb-2">
                 <Link to="/contact" className="text-white">
                   Email

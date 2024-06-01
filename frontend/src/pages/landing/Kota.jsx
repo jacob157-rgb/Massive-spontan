@@ -1,59 +1,53 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import "swiper/css/bundle";
+import "swiper/css";
 import TextUnderline from "../../components/misc/TextUnderline";
-import RecomendCard from "../../components/card/RecomendCard";
+import KotaCard from "../../components/card/KotaCard";
 import NextButton from "../../components/misc/NextButton";
 import PrevButton from "../../components/misc/PrevButton";
 
-// Data untuk RecomendCard
-const recomendData = [
+// Data untuk KotaCard
+const kotaData = [
   {
     no: 1,
-    image: "/src/assets/img/card/dopamine.jpg",
-    title: "2024 Junny Tour: (Intro) Dopamine - Jakarta",
-    date: "28 Juni 2024",
+    image: "/src/assets/img/kota/bali.png",
+    kota: "Bali",
   },
   {
     no: 2,
-    image: "/src/assets/img/card/soi.jpg",
-    title: "Scent of Indonesia",
-    date: "24 Juni - 30 Juni 2024",
+    image: "/src/assets/img/kota/jogja.png",
+    kota: "Yogyakarta",
   },
   {
     no: 3,
-    image: "/src/assets/img/card/kod.jpg",
-    title: "KIND OF DREAM FESTIVAL 2024",
-    date: "14 Juni - 15 Juni 2024",
+    image: "/src/assets/img/kota/jakarta.png",
+    kota: "Jakarta",
   },
   {
     no: 4,
-    image: "/src/assets/img/card/dopamine.jpg",
-    title: "2024 Junny Tour: (Intro) Dopamine - Jakarta",
-    date: "28 Juni 2024",
+    image: "/src/assets/img/kota/makassar.png",
+    kota: "Makassar",
   },
   {
     no: 5,
-    image: "/src/assets/img/card/soi.jpg",
-    title: "Scent of Indonesia",
-    date: "24 Juni - 30 Juni 2024",
+    image: "/src/assets/img/kota/bandung.png",
+    kota: "Bandung",
   },
   {
     no: 6,
-    image: "/src/assets/img/card/kod.jpg",
-    title: "KIND OF DREAM FESTIVAL 2024",
-    date: "14 Juni - 15 Juni 2024",
+    image: "/src/assets/img/kota/surabaya.png",
+    kota: "Surabaya",
   },
 ];
 
-function Recomendation() {
-  const carouselName = "recomendation";
+function CarouselKota() {
+  const carouselName = "kota";
 
   return (
     <div className="relative h-auto px-4 mx-auto md:py-5 lg:px-32">
-      <div className="mb-5">
-        <TextUnderline label="Rekomendasi" />
+      <div className="flex justify-center mb-5">
+        <TextUnderline label="Lihat Dikotamu" justify="center" />
       </div>
       <div className="relative flex items-center">
         <div className="absolute z-10 top-14 -left-7">
@@ -82,14 +76,9 @@ function Recomendation() {
               spaceBetween: 20,
             },
           }}>
-          {recomendData.map((item) => (
+          {kotaData.map((item) => (
             <SwiperSlide key={item.no}>
-              <RecomendCard
-                no={item.no}
-                image={item.image}
-                title={item.title}
-                date={item.date}
-              />
+              <KotaCard no={item.no} image={item.image} kota={item.kota} />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -101,4 +90,4 @@ function Recomendation() {
   );
 }
 
-export default Recomendation;
+export default CarouselKota;
