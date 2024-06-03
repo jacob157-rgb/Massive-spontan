@@ -9,6 +9,7 @@ import BestSeller from "./BestSeller";
 import ComingSoon from "./ComingSoon";
 import Kota from "./Kota";
 import Footer from "../../components/footer/Footer";
+import { Link } from "react-router-dom";
 
 const banner = [
   {
@@ -43,11 +44,13 @@ function Landing() {
         modules={[Autoplay]}>
         {banner.map((item) => (
           <SwiperSlide key={item.no}>
-            <img
-              className="object-cover object-center w-full h-44 md:h-auto"
-              src={item.image}
-              alt={`Banner ${item.no}`}
-            />
+            <Link>
+              <img
+                className="object-cover object-center w-full h-44 md:h-auto"
+                src={item.image}
+                alt={`Banner ${item.no}`}
+              />
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

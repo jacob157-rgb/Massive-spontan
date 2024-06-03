@@ -4,6 +4,7 @@ import Explore from "./pages/explore/Explore";
 import Auth from "./pages/auth/Auth";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import Event from "./pages/event/Event";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/event" element={<Event />} />
       </Routes>
     </>
   );
