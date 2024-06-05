@@ -1,14 +1,5 @@
-import React from "react";
-
-function navigate(url) {
-  window.location.href = url;
-}
-
-async function handleGoogleLogin() {
-  // const response = await fetch("http://localhost:3000/", { method: "post" });
-  // const data = await response.json();
-  // navigate(data.url);
-
+// frontend/src/components/misc/SocialButton.jsx
+function handleGoogleLogin() {
   window.location.href = "http://localhost:3000/auth/google";
 }
 

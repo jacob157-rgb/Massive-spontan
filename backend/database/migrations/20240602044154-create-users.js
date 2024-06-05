@@ -9,6 +9,11 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
+      refresh_token: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
+      },
       avatar: {
         type: Sequelize.STRING,
         allowNull: true,

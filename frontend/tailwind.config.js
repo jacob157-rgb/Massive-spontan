@@ -15,7 +15,8 @@ export default {
         "tertiary": "#001A44",
         "highlight": "#5582EE",
         "dblue": "#001A44",
-        "c1b": "#DDE7FF"
+        "c1b": "#DDE7FF",
+        "abu": "#EBEBEB",
       },
       boxShadow: {
         "s1": '0 8px 10px rgba(0, 0, 0, 0.1)',

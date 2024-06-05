@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { errorMessages } from "../errorMessages";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -22,16 +21,11 @@ function Login() {
         password,
       });
       localStorage.setItem("token", res.data.token);
-      // Redirect to home page
       navigate("/");
-      // Show success toast
       toast.success("Login Berhasil!");
     } catch (err) {
       setError(err.response.data.message);
-      // Show error toast
-      toast.error(
-        errorMessages[err.response.data.message] || "Terjadi kesalahan."
-      );
+      toast.error(err.response.data.message || "Terjadi kesalahan.");
     }
   };
 

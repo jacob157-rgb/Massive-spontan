@@ -5,7 +5,8 @@ function Navigation() {
     <div className="flex flex-col gap-2 md:flex-row md:gap-5">
       <NavItem to="/explore" label="Jelajahi" icon="explore" />
       <NavItem to="/create-event" label="Buat Event" icon="calendar_add_on" />
-      <NavItem to="/auth" label="Sign In/Register" icon="login" />
+      {/* <NavItem to="/auth" label="Sign In/Register" icon="login" /> */}
+      <NavItem to="/auth" label="Dashboard" icon="account_circle" />
     </div>
   );
 }

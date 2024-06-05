@@ -1,13 +1,19 @@
 const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 
 module.exports = (sequelize) => {
-  return sequelize.define(
+  const User = sequelize.define(
     "users",
     {
       id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true,
+      },
+      refresh_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
       },
       avatar: {
         type: DataTypes.STRING,
@@ -34,7 +40,7 @@ module.exports = (sequelize) => {
       googleId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true
+        unique: true,
       },
       no_hp: {
         type: DataTypes.STRING(15),
@@ -60,4 +66,19 @@ module.exports = (sequelize) => {
       freezeTableName: true,
     }
   );
+
+  // Hash password before saving user
+  User.beforeCreate(async (user) => {
+    if (user.password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+    }
+  });
+
+  // Method to validate password
+  User.prototype.isValidPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+  };
+
+  return User;
 };

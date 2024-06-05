@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-function NavTabsItem({ label }) {
+function NavItem({ to, label }) {
   return (
     <NavLink
       className={({ isActive }) =>
@@ -15,11 +15,11 @@ function NavTabsItem({ label }) {
 
 function Navigation() {
   return (
-    <div className="flex space-x-4 md:space-x-0 flex-nowrap justify-start w-full md:w-auto overflow-x-auto">
-      <NavTabsItem label="Konser" />
-      <NavTabsItem label="Olahraga" />
-      <NavTabsItem label="Festival" />
-      <NavTabsItem label="Workshop/Seminar" />
+    <div className="flex justify-start w-full space-x-4 overflow-x-auto md:space-x-0 flex-nowrap md:w-auto">
+      <NavItem label="Konser" />
+      <NavItem label="Olahraga" />
+      <NavItem label="Festival" />
+      <NavItem label="Workshop/Seminar" />
     </div>
   );
 }

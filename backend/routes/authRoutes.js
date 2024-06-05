@@ -3,7 +3,7 @@ const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
-
+const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
 const { User } = require("../database/models");
@@ -19,7 +19,35 @@ passport.deserializeUser((id, done) => {
     .catch((err) => done(err, null));
 });
 
-// Configure Passport to use Google OAuth 2.0 Strategy
+// Local Strategy
+passport.use(
+  "local",
+  new LocalStrategy(
+    {
+      passReqToCallback: true,
+    },
+    async (req, username, password, done) => {
+      console.log("Local strategy verify cb");
+      try {
+        const user = await User.findOne({ where: { email: username } });
+        if (!user) {
+          return done(null, false, { message: "Email tidak ditemukan." });
+        }
+
+        const isValid = await user.isValidPassword(password);
+        if (!isValid) {
+          return done(null, false, { message: "Kata sandi salah." });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
+);
+
+// Google OAuth 2.0 Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -51,7 +79,7 @@ passport.use(
   )
 );
 
-// Configure Passport to use JWT Strategy
+// JWT Strategy
 passport.use(
   new JwtStrategy(
     {
@@ -75,30 +103,68 @@ passport.use(
   )
 );
 
-// Route to initiate Google OAuth 2.0 authentication
+// Login route (local strategy)
+router.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  function (req, res) {
+    const user = req.user;
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ token });
+  }
+);
+
+// Registration route
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password, nama } = req.body;
+
+    // Check for existing user
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email is already registered" });
+    }
+
+    // Create new user
+    // Registration route (continued)
+    const newUser = await User.create({ email, password, nama });
+
+    // Generate JWT token
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // Send token in response
+    res.json({ token });
+  } catch (err) {
+    console.error("Error in user registration:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Google OAuth 2.0 authentication route
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// Route to handle the OAuth 2.0 callback
+// Google OAuth 2.0 callback route
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-  }),
-  function (req, res) {
-    // Generate JWT
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    // Generate JWT token
     const user = req.user;
-    const token = jwt.sign(
-      { id: user.id, googleId: user.googleId },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    // Send token in response header or as a part of the URL
-    res.redirect(`/api/profile?token=${token}`);
+    // Redirect with token in the URL
+    res.redirect(`http://localhost:5173/google/callback?token=${token}`);
   }
 );
+
 
 module.exports = router;

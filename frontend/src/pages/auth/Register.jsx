@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { errorMessages } from "../errorMessages";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -12,7 +11,6 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
@@ -25,21 +23,14 @@ function Register() {
         password,
         confirmPassword,
       });
-      // Clear form fields
       setUsername("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      // Redirect to login page
       navigate("/login");
-      // Show success toast
       toast.success("Pendaftaran Berhasil! Silakan masuk.");
     } catch (err) {
-      setError(err.response.data.message);
-      // Show error toast
-      toast.error(
-        errorMessages[err.response.data.message] || "Terjadi kesalahan."
-      );
+      toast.error(err.response.data.message || "Terjadi kesalahan.");
     }
   };
 

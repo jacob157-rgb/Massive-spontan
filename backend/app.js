@@ -8,7 +8,7 @@ const session = require("express-session");
 const cors = require("cors");
 const listEndpoints = require("express-list-endpoints");
 const passport = require("passport");
-const authRoutes = require("../backend/routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 
 const { sequelize } = require("./database/models");
@@ -22,9 +22,11 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true
   })
 );
 
+app.use(express.json());
 app.use(cookieParser());
 app.use(
   session({
@@ -32,7 +34,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Only set secure to true in production
+      secure: process.env.NODE_ENV === "production", // Only set secure to true in production
       httpOnly: true,
     },
   })
@@ -46,7 +48,7 @@ app.use("/endpoints", (req, res) => {
 
 // Use routes
 app.use("/auth", authRoutes);
-app.use("/api", protectedRoutes);
+app.use(protectedRoutes)
 
 // CSRF protection for the routes that need it
 app.use(csrfProtection);
