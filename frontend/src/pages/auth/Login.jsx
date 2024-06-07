@@ -15,6 +15,18 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validasi formulir
+    if (!email.trim()) {
+      toast.error("Email harus diisi");
+      return;
+    }
+
+    if (!password.trim()) {
+      toast.error("Kata sandi harus diisi");
+      return;
+    }
+
     try {
       const res = await axios.post("http://localhost:3000/auth/login", {
         email,
@@ -24,7 +36,7 @@ function Login() {
       navigate("/");
       toast.success("Login Berhasil!");
     } catch (err) {
-      setError(err.response.data.message);
+      setError(err.response.data.message || "Terjadi kesalahan.");
       toast.error(err.response.data.message || "Terjadi kesalahan.");
     }
   };

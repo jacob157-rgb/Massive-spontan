@@ -10,40 +10,6 @@ const { User } = require("../database/models");
 const { where } = require("sequelize");
 
 // Local Strategy
-// passport.use(
-//   "local",
-//   new LocalStrategy(
-//     {
-//       passReqToCallback: true,
-//     },
-//     async (username, password, done) => {
-//       console.log("Local strategy verify callback");
-//       try {
-//         const user = await User.findOne({ where: { email: username } });
-//         if (!user) {
-//           return done(null, false, { message: "Email tidak ditemukan." });
-//         }
-
-//         if (user.googleId && !password) {
-//           return done(null, false, {
-//             message: "Silahkan login melalui Google.",
-//           });
-//         }
-
-//         const isValid = await user.isValidPassword(password);
-//         if (!isValid) {
-//           return done(null, false, { message: "Kata sandi salah." });
-//         }
-
-//         return done(null, user);
-//       } catch (err) {
-//         return done(err);
-//       }
-//     }
-//   )
-// );
-
-// Local Strategy
 passport.use(
   "local",
   new LocalStrategy(
@@ -156,10 +122,10 @@ router.post(
 
 // router.get("/login", (req, res) => {});
 
-// Registration route
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, nama } = req.body;
+    const { avatar, nama, email, password, no_hp, tgl_lahir, gender } =
+      req.body;
 
     // Check for existing user
     const existingUser = await User.findOne({ where: { email } });
@@ -168,8 +134,15 @@ router.post("/register", async (req, res) => {
     }
 
     // Create new user
-    // Registration route (continued)
-    const newUser = await User.create({ email, password, nama });
+    const newUser = await User.create({
+      avatar,
+      nama,
+      email,
+      password,
+      no_hp,
+      tgl_lahir,
+      gender,
+    });
 
     // Generate JWT token
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
