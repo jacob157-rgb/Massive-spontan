@@ -7,31 +7,63 @@ const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
 const { User } = require("../database/models");
+const { where } = require("sequelize");
 
-// Configure Passport
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// Local Strategy
+// passport.use(
+//   "local",
+//   new LocalStrategy(
+//     {
+//       passReqToCallback: true,
+//     },
+//     async (username, password, done) => {
+//       console.log("Local strategy verify callback");
+//       try {
+//         const user = await User.findOne({ where: { email: username } });
+//         if (!user) {
+//           return done(null, false, { message: "Email tidak ditemukan." });
+//         }
 
-passport.deserializeUser((id, done) => {
-  User.findByPk(id)
-    .then((user) => done(null, user))
-    .catch((err) => done(err, null));
-});
+//         if (user.googleId && !password) {
+//           return done(null, false, {
+//             message: "Silahkan login melalui Google.",
+//           });
+//         }
+
+//         const isValid = await user.isValidPassword(password);
+//         if (!isValid) {
+//           return done(null, false, { message: "Kata sandi salah." });
+//         }
+
+//         return done(null, user);
+//       } catch (err) {
+//         return done(err);
+//       }
+//     }
+//   )
+// );
 
 // Local Strategy
 passport.use(
   "local",
   new LocalStrategy(
     {
+      usernameField: "email",
+      passwordField: "password",
       passReqToCallback: true,
     },
     async (req, username, password, done) => {
-      console.log("Local strategy verify cb");
+      console.log("Local strategy verify callback");
       try {
         const user = await User.findOne({ where: { email: username } });
         if (!user) {
           return done(null, false, { message: "Email tidak ditemukan." });
+        }
+
+        if (user.googleId && !password) {
+          return done(null, false, {
+            message: "Silahkan login melalui Google.",
+          });
         }
 
         const isValid = await user.isValidPassword(password);
@@ -103,10 +135,16 @@ passport.use(
   )
 );
 
-// Login route (local strategy)
 router.post(
   "/login",
-  passport.authenticate("local", { session: false }),
+  (req, res, next) => {
+    console.log("Login route hit");
+    next();
+  },
+  passport.authenticate("local", {
+    session: false,
+    successRedirect: "/",
+  }),
   function (req, res) {
     const user = req.user;
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -115,6 +153,8 @@ router.post(
     res.json({ token });
   }
 );
+
+// router.get("/login", (req, res) => {});
 
 // Registration route
 router.post("/register", async (req, res) => {
@@ -166,5 +206,15 @@ router.get(
   }
 );
 
+// Configure Passport
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findByPk(id)
+    .then((user) => done(null, user))
+    .catch((err) => done(err, null));
+});
 
 module.exports = router;

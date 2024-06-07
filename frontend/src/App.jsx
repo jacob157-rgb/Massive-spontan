@@ -1,5 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import Landing from "./pages/landing/Landing";
+import Konser from "./pages/landing/konser/Konser";
+import Olahraga from "./pages/landing/olahraga/Olahraga";
+import Festival from "./pages/landing/festival/Festival";
+import Workshop from "./pages/landing/workshop/Workshop";
 import Explore from "./pages/explore/Explore";
 import Auth from "./pages/auth/Auth";
 import Login from "./pages/auth/Login";
@@ -14,7 +17,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Konser />} />
+        <Route path="/sports" element={<Olahraga />} />
+        <Route path="/fest" element={<Festival />} />
+        <Route path="/dev" element={<Workshop />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Login />} />

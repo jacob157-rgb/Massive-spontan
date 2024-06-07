@@ -1,9 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const csrf = require("csurf");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const session = require("express-session");
 const cors = require("cors");
 const listEndpoints = require("express-list-endpoints");
@@ -13,21 +10,14 @@ const protectedRoutes = require("./routes/protectedRoutes");
 
 const { sequelize } = require("./database/models");
 
-// CSRF protection middleware setup
-const csrfProtection = csrf({ cookie: true });
-const parseForm = bodyParser.urlencoded({ extended: false });
-
 const app = express();
 
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true
+    credentials: true,
   })
 );
-
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   session({
     secret: process.env.JWT_SECRET,
@@ -39,6 +29,7 @@ app.use(
     },
   })
 );
+app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -48,10 +39,7 @@ app.use("/endpoints", (req, res) => {
 
 // Use routes
 app.use("/auth", authRoutes);
-app.use(protectedRoutes)
-
-// CSRF protection for the routes that need it
-app.use(csrfProtection);
+app.use(protectedRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
