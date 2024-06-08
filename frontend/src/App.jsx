@@ -13,6 +13,7 @@ import Description from "./pages/event/Description"; // Import Description compo
 import Facility from "./pages/event/Facility"; // Import Facility component
 import Ratings from "./pages/event/Ratings"; // Import Ratings component
 import GoogleCallback from "./pages/auth/GoogleCallback"; // Import GoogleCallback component
+import AddEvent from "./pages/dashboard/AddEvent";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/event/tiket" element={<Tiket />} />
+        <Route path="/event/add" element={<AddEvent />} />
         <Route path="/create-event" element={<DashboardCreator />} />
         <Route path="/event/description" element={<Description />} />
         <Route path="/event/facility" element={<Facility />} />
