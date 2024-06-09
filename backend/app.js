@@ -1,11 +1,18 @@
-require("dotenv").config();
-
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 const listEndpoints = require("express-list-endpoints");
 const passport = require("passport");
+const path = require("path");
 const authRoutes = require("./routes/authRoutes");
+const eventRoutes = require("./routes/eventRoutes");
+const tagRoutes = require("./routes/tagRoutes");
+const tiketRoutes = require("./routes/tiketRoutes");
+const topikRoutes = require("./routes/topikRoutes");
+const formatRoutes = require("./routes/formatRoutes");
+const rekeningRoutes = require("./routes/rekeningRoutes");
+const penyelenggaraRoutes = require("./routes/penyelenggaraRoutes");
+const cpRoutes = require("./routes/cpRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 
 const { sequelize } = require("./database/models");
@@ -18,20 +25,25 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(
   session({
     secret: process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Only set secure to true in production
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     },
   })
 );
+
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Serve static files from the uploads directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/endpoints", (req, res) => {
   res.json(listEndpoints(app));
@@ -40,6 +52,14 @@ app.use("/endpoints", (req, res) => {
 // Use routes
 app.use("/auth", authRoutes);
 app.use(protectedRoutes);
+app.use(eventRoutes);
+app.use(tagRoutes);
+app.use(formatRoutes);
+app.use(topikRoutes);
+app.use(cpRoutes);
+app.use(rekeningRoutes);
+app.use(penyelenggaraRoutes);
+app.use(tiketRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);

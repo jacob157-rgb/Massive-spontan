@@ -2,14 +2,33 @@ require("dotenv").config();
 const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const router = express.Router();
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
+const fs = require("fs");
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
 const { User } = require("../database/models");
-const { where } = require("sequelize");
 
-// Local Strategy
+const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads/");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage });
+
 passport.use(
   "local",
   new LocalStrategy(
@@ -19,7 +38,6 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, username, password, done) => {
-      console.log("Local strategy verify callback");
       try {
         const user = await User.findOne({ where: { email: username } });
         if (!user) {
@@ -45,7 +63,6 @@ passport.use(
   )
 );
 
-// Google OAuth 2.0 Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -55,7 +72,6 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
-        // Find or create user based on Google ID
         const [user, created] = await User.findOrCreate({
           where: { googleId: profile.id },
           defaults: {
@@ -65,7 +81,7 @@ passport.use(
               profile.displayName ||
               `${profile.name.givenName} ${profile.name.familyName}`,
             email: profile.emails[0].value,
-            email_verified: profile.emails[0].verified, // Set to true if verified by Google
+            email_verified: profile.emails[0].verified,
           },
         });
 
@@ -77,7 +93,6 @@ passport.use(
   )
 );
 
-// JWT Strategy
 passport.use(
   new JwtStrategy(
     {
@@ -86,7 +101,6 @@ passport.use(
     },
     async (jwtPayload, done) => {
       try {
-        console.log("JWT Payload:", jwtPayload);
         const user = await User.findByPk(jwtPayload.id);
         if (user) {
           return done(null, user);
@@ -94,7 +108,6 @@ passport.use(
           return done(null, false);
         }
       } catch (err) {
-        console.error("Error in JWT strategy:", err);
         return done(err, false);
       }
     }
@@ -104,7 +117,6 @@ passport.use(
 router.post(
   "/login",
   (req, res, next) => {
-    console.log("Login route hit");
     next();
   },
   passport.authenticate("local", {
@@ -120,20 +132,28 @@ router.post(
   }
 );
 
-// router.get("/login", (req, res) => {});
+router.post("/upload-avatar", upload.single("avatar"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${
+    req.file.filename
+  }`;
+  res.json({ fileUrl });
+});
 
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("avatar"), async (req, res) => {
   try {
-    const { avatar, nama, email, password, no_hp, tgl_lahir, gender } =
-      req.body;
+    const { nama, email, password, no_hp, tgl_lahir, gender } = req.body;
+    const avatar = req.file
+      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      : null;
 
-    // Check for existing user
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "Email is already registered" });
     }
 
-    // Create new user
     const newUser = await User.create({
       avatar,
       nama,
@@ -144,42 +164,33 @@ router.post("/register", async (req, res) => {
       gender,
     });
 
-    // Generate JWT token
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Send token in response
     res.json({ token });
   } catch (err) {
-    console.error("Error in user registration:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// Google OAuth 2.0 authentication route
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// Google OAuth 2.0 callback route
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
   (req, res) => {
-    // Generate JWT token
     const user = req.user;
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-
-    // Redirect with token in the URL
     res.redirect(`http://localhost:5173/google/callback?token=${token}`);
   }
 );
 
-// Configure Passport
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

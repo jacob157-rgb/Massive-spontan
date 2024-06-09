@@ -10,11 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@headlessui/react": "1.7.14",
-    "@tinymce/tinymce-react": "^5.0.1",
     "axios": "^1.7.2",
     "croppie": "^2.6.5",
     "path": "^0.12.7",
+    "quill": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",

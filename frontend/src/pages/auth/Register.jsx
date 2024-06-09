@@ -108,7 +108,7 @@ function Register() {
 
   useEffect(() => {
     let croppieInstance = null;
-  
+
     const initializeCroppie = () => {
       croppieInstance = new Croppie(croppieRef.current, {
         viewport: { width: 200, height: 200, type: "circle" },
@@ -120,7 +120,7 @@ function Register() {
       });
       setCroppieInstance(croppieInstance);
     };
-  
+
     const safelyCallDestroy = (instance) => {
       if (instance) {
         try {
@@ -131,21 +131,18 @@ function Register() {
         }
       }
     };
-  
+
     if (isModalOpen && croppieRef.current && avatarPreview) {
       if (croppieInstance) {
         safelyCallDestroy(croppieInstance);
       }
       initializeCroppie();
     }
-  
+
     return () => {
       safelyCallDestroy(croppieInstance);
     };
   }, [isModalOpen, avatarPreview]);
-  
-  
-  
 
   const renderStep1 = () => (
     <>
