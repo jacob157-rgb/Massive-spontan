@@ -1,7 +1,57 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../../../contexts/CartContext";
 
 function Cart() {
+  const { cart } = useCart();
+
+  const formatCurrency = (amount) => {
+    const formatter = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    });
+    return formatter.format(amount);
+  };
+
+  const handlePayment = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productName: cart[0].name, // Adjust to your needs
+          price: cart[0].price, // Adjust to your needs
+          quantity: cart[0].quantity, // Adjust to your needs
+        }),
+      });
+
+      const data = await response.json();
+      if (data.transactionToken) {
+        window.snap.pay(data.transactionToken, {
+          onSuccess: (result) => {
+            console.log("Payment successful", result);
+          },
+          onPending: (result) => {
+            console.log("Payment pending", result);
+          },
+          onError: (result) => {
+            console.error("Payment error", result);
+          },
+          onClose: () => {
+            console.log("Payment popup closed");
+          },
+        });
+      } else {
+        alert("Failed to create transaction");
+      }
+    } catch (error) {
+      console.error("Error handling payment:", error);
+      alert("Failed to create transaction");
+    }
+  };
+
   return (
     <div className="relative w-full my-5 bg-white rounded-sm shadow-lg">
       <div className="flex items-center gap-3 pt-5 pb-20 justify-evenly">
@@ -10,30 +60,40 @@ function Cart() {
           src="/src/assets/img/logo2.png"
           alt="Logo"
         />
-        {/* <p className="text-xl font-medium">Pilih tiket pada tab tiket</p> */}
-        <div className="border-b border-black">
-          <div className="flex items-center justify-between gap-16">
-            <p className="text-xl font-medium">VVIP</p>
-            <p className="text-xl font-medium">28 Juli 2024</p>
+        {cart.length === 0 ? (
+          <Link
+            to="/event/tiket"
+            className="absolute flex items-center px-3 py-2 text-white transform -start-2 bottom-5 bg-secondary">
+            <span className="material-symbols-outlined">chevron_left</span>
+            Pilih Tiket terlebih dahulu
+          </Link>
+        ) : (
+          <div className="border-b border-black">
+            {cart.map((item, index) => (
+              <div key={index} className="mb-2">
+                <div className="flex items-center justify-between gap-16">
+                  <p className="text-xl font-medium">{item.name}</p>
+                  <p className="text-xl font-medium">28 Juli 2024</p>
+                </div>
+                <div className="flex items-center justify-between gap-16">
+                  <p className="text-sm font-semibold">{item.quantity} tiket</p>
+                  <p className="font-semibold">
+                    {formatCurrency(item.price * item.quantity)}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center justify-between gap-16">
-            <p className="text-sm font-semibold">1 tiket</p>
-            <p className="font-semibold">Rp3.000.000,00</p>
-          </div>
-        </div>
+        )}
       </div>
-      {/* <Link
-        to="/event/tiket"
-        className="absolute flex items-center px-3 py-2 text-white transform -translate-x-2 bottom-5 bg-secondary">
-        <span className="material-symbols-outlined">chevron_left</span>
-        Pilih Tiket terlebih dahulu
-      </Link> */}
-      <Link
-        to="/event/tiket"
-        className="absolute flex items-center px-3 py-2 text-white transform -end-2 bottom-5 bg-secondary">
-        Lanjutkan Pembayaran
-        <span className="material-symbols-outlined">chevron_right</span>
-      </Link>
+      {cart.length > 0 && (
+        <button
+          onClick={handlePayment}
+          className="absolute flex items-center px-3 py-2 text-white transform -end-2 bottom-5 bg-secondary">
+          Lanjutkan Pembayaran
+          <span className="material-symbols-outlined">chevron_right</span>
+        </button>
+      )}
     </div>
   );
 }

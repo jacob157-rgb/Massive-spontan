@@ -8,24 +8,27 @@ import Kategori from "../../components/card/Kategori";
 import Cart from "../../components/card/Cart";
 import Footer from "../../components/footer/Footer";
 import Facilities from "../../components/facility/Facilities";
+import { CartProvider } from "../../../contexts/CartContext";
 
 function Facility() {
   return (
     <>
-      <Navbar />
-      <EventBanner />
-      <NavTabsTiket />
-      <div className="grid grid-cols-1 gap-8 px-4 md:grid-cols-12 md:px-8 lg:px-32">
-        <div className="md:col-span-7">
-          <Kategori />
-          <Facilities />
+      <CartProvider>
+        <Navbar />
+        <EventBanner />
+        <NavTabsTiket />
+        <div className="grid grid-cols-1 gap-8 px-4 md:grid-cols-12 md:px-8 lg:px-32">
+          <div className="md:col-span-7">
+            <Kategori />
+            <Facilities />
+          </div>
+          <div className="md:col-span-5">
+            <PenyelenggaraCard />
+            <Cart />
+          </div>
         </div>
-        <div className="md:col-span-5">
-          <PenyelenggaraCard />
-          <Cart />
-        </div>
-      </div>
-      <Footer />
+        <Footer />
+      </CartProvider>
     </>
   );
 }

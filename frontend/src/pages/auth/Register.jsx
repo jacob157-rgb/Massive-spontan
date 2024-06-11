@@ -52,24 +52,28 @@ function Register() {
     if (!validateStep2()) return;
 
     try {
-      const imageData = avatar; // Use the cropped image if available
-      if (!imageData) {
-        throw new Error("Please upload an avatar.");
+      const formData = new FormData();
+      if (avatar) {
+        formData.append("avatar", avatar);
       }
+      formData.append("nama", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("no_hp", phone);
+      formData.append("tgl_lahir", birthDate);
+      formData.append("gender", gender);
 
-      const res = await axios.post("http://localhost:3000/auth/register", {
-        avatar: imageData,
-        nama: name,
-        email: email,
-        password: password,
-        no_hp: phone,
-        tgl_lahir: birthDate,
-        gender: gender,
-      });
+      const res = await axios.post(
+        "http://localhost:3000/auth/register",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
       toast.success("Registration Successful! Please log in.");
       navigate("/login");
     } catch (err) {
-      toast.error(err.response.data.message || "An error occurred.");
+      toast.error(
+        err.response.data.message || "An error occurred during registration."
+      );
     }
   };
 
@@ -91,8 +95,9 @@ function Register() {
 
   const handleCrop = async () => {
     try {
-      const croppedImage = await croppieInstance.result("base64");
+      const croppedImage = await croppieInstance.result("blob");
       setAvatar(croppedImage);
+      setAvatarPreview(URL.createObjectURL(croppedImage));
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error cropping image:", err);
@@ -112,7 +117,7 @@ function Register() {
     const initializeCroppie = () => {
       croppieInstance = new Croppie(croppieRef.current, {
         viewport: { width: 200, height: 200, type: "circle" },
-        boundary: { width: 300, height: 300 }, // Ensure boundary is defined
+        boundary: { width: 300, height: 300 },
         showZoomer: true,
       });
       croppieInstance.bind({
@@ -209,15 +214,15 @@ function Register() {
       <h1 className="mb-3 text-3xl font-bold md:mb-5 md:text-4xl">
         Lengkapi Profil
       </h1>
-      <form onSubmit={handleSubmit} className="w-full mx-auto">
+      <form onSubmit={handleSubmit} encType={'multipart/form-data'} className="w-full mx-auto">
         <label htmlFor="avatar" className="block mb-1 font-medium md:mb-2">
           Avatar (optional)
         </label>
         <div className="flex items-center justify-center w-full">
           <label className="relative block w-32 h-32 overflow-hidden bg-gray-200 rounded-full cursor-pointer">
-            {avatar ? (
+            {avatarPreview ? (
               <img
-                src={avatar}
+                src={avatarPreview}
                 alt="Avatar"
                 className="object-cover w-full h-full"
                 onClick={() => handleEditAvatar()}
@@ -229,6 +234,7 @@ function Register() {
             )}
             <input
               type="file"
+              id="avatar"
               className="hidden"
               onChange={handleAvatarChange}
             />

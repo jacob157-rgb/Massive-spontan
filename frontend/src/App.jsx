@@ -1,4 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
 import Konser from "./pages/landing/konser/Konser";
 import Olahraga from "./pages/landing/olahraga/Olahraga";
 import Festival from "./pages/landing/festival/Festival";
@@ -8,14 +10,17 @@ import Auth from "./pages/auth/Auth";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Tiket from "./pages/event/Tiket";
-import DashboardCreator from "./pages/dashboard/DashboardCreator"; 
-import Description from "./pages/event/Description"; // Import Description component
-import Facility from "./pages/event/Facility"; // Import Facility component
-import Ratings from "./pages/event/Ratings"; // Import Ratings component
-import GoogleCallback from "./pages/auth/GoogleCallback"; // Import GoogleCallback component
+import DashboardCreator from "./pages/dashboard/DashboardCreator";
+import Description from "./pages/event/Description";
+import Facility from "./pages/event/Facility";
+import Ratings from "./pages/event/Ratings";
+import GoogleCallback from "./pages/auth/GoogleCallback";
 import AddEvent from "./pages/dashboard/AddEvent";
+import { useUser } from "../contexts/UserContext";
 
 function App() {
+  const { token } = useUser();
+
   return (
     <>
       <Routes>
@@ -25,8 +30,6 @@ function App() {
         <Route path="/dev" element={<Workshop />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/event/tiket" element={<Tiket />} />
         <Route path="/event/add" element={<AddEvent />} />
         <Route path="/create-event" element={<DashboardCreator />} />
@@ -34,6 +37,19 @@ function App() {
         <Route path="/event/facility" element={<Facility />} />
         <Route path="/event/ratings" element={<Ratings />} />
         <Route path="/google/callback" element={<GoogleCallback />} />
+
+        {/* Routes accessible only to non-logged-in users */}
+        <Route
+          path="/login"
+          element={token ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={token ? <Navigate to="/" /> : <Register />}
+        />
+
+        {/* Routes accessible only to logged-in users */}
+        {token && <></>}
       </Routes>
     </>
   );

@@ -13,21 +13,42 @@ const { User } = require("../database/models");
 
 const router = express.Router();
 
+// Setup Multer Storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath);
-    }
-    cb(null, uploadPath);
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../public/uploads/avatar"));
   },
-  filename: (req, file, cb) => {
-    const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
   },
 });
 
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//   destination: (req, file, callback) => {
+//     callback(null, 'public/uploads/avatar/');
+//   },
+//   filename: (req, file, callback) => {
+//     callback(null, `image-${Date.now()}-${file.originalname}`);
+//   },
+// });
+
+// const upload = multer({
+//   storage: storage,
+//   fileFilter: (req, file, callback) => {
+//     const ext = path.extname(file.originalname).toLowerCase();
+//     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+//       return callback(new Error('Only images are allowed'));
+//     }
+//     callback(null, true);
+//   },
+//   limits: {
+//     fileSize: 1920 * 1080, // Adjust as necessary
+//   },
+// });
 
 passport.use(
   "local",
@@ -115,64 +136,62 @@ passport.use(
 );
 
 router.post(
-  "/login",
-  (req, res, next) => {
-    next();
-  },
-  passport.authenticate("local", {
-    session: false,
-    successRedirect: "/",
-  }),
-  function (req, res) {
+  '/login',
+  passport.authenticate('local', { session: false }),
+  (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
     const user = req.user;
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: '1h',
     });
+
     res.json({ token });
   }
 );
 
-router.post("/upload-avatar", upload.single("avatar"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${
-    req.file.filename
-  }`;
-  res.json({ fileUrl });
-});
 
-router.post("/register", upload.single("avatar"), async (req, res) => {
-  try {
-    const { nama, email, password, no_hp, tgl_lahir, gender } = req.body;
-    const avatar = req.file
-      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
-      : null;
+// Registration Route with Avatar Upload
+router.post(
+  "/register",
+  multer({ storage: storage }).single("avatar"),
+  async (req, res) => {
+    try {
+      const { nama, email, password, no_hp, tgl_lahir, gender } = req.body;
+      let avatar = null;
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email is already registered" });
+      if (req.file) {
+        avatar = `/uploads/avatar/${req.file.filename}`;
+      }
+
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Email is already registered" });
+      }
+
+      const newUser = await User.create({
+        avatar,
+        nama,
+        email,
+        password,
+        no_hp,
+        tgl_lahir,
+        gender,
+      });
+
+      const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      res.json({ token });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    const newUser = await User.create({
-      avatar,
-      nama,
-      email,
-      password,
-      no_hp,
-      tgl_lahir,
-      gender,
-    });
-
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({ token });
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
   }
-});
+);
 
 router.get(
   "/google",

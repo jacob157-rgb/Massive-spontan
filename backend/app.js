@@ -14,7 +14,7 @@ const rekeningRoutes = require("./routes/rekeningRoutes");
 const penyelenggaraRoutes = require("./routes/penyelenggaraRoutes");
 const cpRoutes = require("./routes/cpRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
-
+const midtransRoutes = require("./routes/midtransRoutes");
 const { sequelize } = require("./database/models");
 
 const app = express();
@@ -43,7 +43,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Serve static files from the uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use(
+//   "/uploads",
+//   express.static(path.join(__dirname, "public/uploads/avatar"))
+// );
+app.use(express.static(path.join(__dirname, "public")));
+
+
 
 app.use("/endpoints", (req, res) => {
   res.json(listEndpoints(app));
@@ -60,6 +66,7 @@ app.use(cpRoutes);
 app.use(rekeningRoutes);
 app.use(penyelenggaraRoutes);
 app.use(tiketRoutes);
+app.use(midtransRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);

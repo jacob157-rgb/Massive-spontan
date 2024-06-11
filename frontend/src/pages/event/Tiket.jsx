@@ -7,10 +7,11 @@ import Cart from "../../components/card/Cart";
 import Footer from "../../components/footer/Footer";
 import Kategori from "../../components/card/Kategori";
 import ListTiket from "../../components/tiket/ListTiket";
+import { CartProvider } from "../../../contexts/CartContext";
 
 function Tiket() {
   return (
-    <>
+    <CartProvider>
       <Navbar />
       <EventBanner />
       <NavTabsTiket />
@@ -22,10 +23,11 @@ function Tiket() {
         <div className="col-span-12 md:col-span-5">
           <PenyelenggaraCard />
           <Cart />
+          <div id="snap-container"></div>
         </div>
       </div>
       <Footer />
-    </>
+    </CartProvider>
   );
 }
 
