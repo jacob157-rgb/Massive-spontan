@@ -21,9 +21,7 @@ function Cart() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productName: cart[0].name, // Adjust to your needs
-          price: cart[0].price, // Adjust to your needs
-          quantity: cart[0].quantity, // Adjust to your needs
+          items: cart, // mengirim seluruh item dalam keranjang
         }),
       });
 
@@ -51,6 +49,8 @@ function Cart() {
       alert("Failed to create transaction");
     }
   };
+
+  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <div className="relative w-full my-5 bg-white rounded-sm shadow-lg">
@@ -83,6 +83,11 @@ function Cart() {
                 </div>
               </div>
             ))}
+            <div className="flex items-center justify-between gap-16 mt-4">
+              <p className="text-xl font-semibold">Total Harga:</p>
+              <p className="text-xl font-semibold">{formatCurrency(totalPrice)}</p>
+            </div>
+
           </div>
         )}
       </div>
