@@ -13,12 +13,7 @@ const UserContext = createContext();
 // UserProvider component to provide user and authentication context
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken_] = useState(localStorage.getItem("token"));
-
-  // Function to set the authentication token
-  const setToken = (newToken) => {
-    setToken_(newToken);
-  };
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Fetch user data
   useEffect(() => {

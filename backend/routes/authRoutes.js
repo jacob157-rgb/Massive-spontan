@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
@@ -10,6 +9,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
 const { User } = require("../database/models");
+require("dotenv").config();
 
 const router = express.Router();
 
@@ -27,29 +27,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, callback) => {
-//     callback(null, 'public/uploads/avatar/');
-//   },
-//   filename: (req, file, callback) => {
-//     callback(null, `image-${Date.now()}-${file.originalname}`);
-//   },
-// });
-
-// const upload = multer({
-//   storage: storage,
-//   fileFilter: (req, file, callback) => {
-//     const ext = path.extname(file.originalname).toLowerCase();
-//     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-//       return callback(new Error('Only images are allowed'));
-//     }
-//     callback(null, true);
-//   },
-//   limits: {
-//     fileSize: 1920 * 1080, // Adjust as necessary
-//   },
-// });
-
+// Passport Local Strategy
 passport.use(
   "local",
   new LocalStrategy(
@@ -84,6 +62,8 @@ passport.use(
   )
 );
 
+// Passport Google Strategy
+// Setup Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -91,29 +71,53 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
-    async function (accessToken, refreshToken, profile, cb) {
+    async (accessToken, refreshToken, profile, cb) => {
       try {
-        const [user, created] = await User.findOrCreate({
-          where: { googleId: profile.id },
-          defaults: {
-            avatar: profile.photos[0].value,
-            googleId: profile.id,
-            nama:
-              profile.displayName ||
-              `${profile.name.givenName} ${profile.name.familyName}`,
-            email: profile.emails[0].value,
-            email_verified: profile.emails[0].verified,
-          },
+        let user = await User.findOne({ where: { googleId: profile.id } });
+
+        if (!user) {
+          // Check if user already exists with the same email
+          user = await User.findOne({
+            where: { email: profile.emails[0].value },
+          });
+
+          if (user) {
+            // Update googleId and possibly avatar if not already set
+            if (!user.googleId) {
+              await user.update({
+                googleId: profile.id,
+                avatar: user.avatar || profile.photos[0].value,
+                email_verified: profile.emails[0].verified,
+              });
+            }
+          } else {
+            // Create new user
+            user = await User.create({
+              avatar: profile.photos[0].value,
+              googleId: profile.id,
+              nama:
+                profile.displayName ||
+                `${profile.name.givenName} ${profile.name.familyName}`,
+              email: profile.emails[0].value,
+              email_verified: profile.emails[0].verified,
+            });
+          }
+        }
+
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: "1h",
         });
 
-        return cb(null, user);
+        // Token disimpan di local storage
+        cb(null, { token });
       } catch (err) {
-        return cb(err);
+        cb(err);
       }
     }
   )
 );
 
+// Passport JWT Strategy
 passport.use(
   new JwtStrategy(
     {
@@ -135,23 +139,47 @@ passport.use(
   )
 );
 
+// Login Route
 router.post(
-  '/login',
-  passport.authenticate('local', { session: false }),
+  "/login",
+  passport.authenticate("local", { session: false }),
   (req, res) => {
     if (!req.user) {
-      return res.status(401).json({ message: 'Authentication failed' });
+      return res.status(401).json({ message: "Authentication failed" });
     }
 
     const user = req.user;
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: "1h",
     });
 
     res.json({ token });
   }
 );
 
+// Google Login Route
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+// Google Callback Route
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login", // Redirect jika gagal
+  }),
+  (req, res) => {
+    const user = req.user;
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // Simpan token di local storage
+    res.redirect(`http://localhost:5173/google/callback?token=${token}`);
+  }
+);
 
 // Registration Route with Avatar Upload
 router.post(
@@ -190,23 +218,6 @@ router.post(
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
     }
-  }
-);
-
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  (req, res) => {
-    const user = req.user;
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.redirect(`http://localhost:5173/google/callback?token=${token}`);
   }
 );
 

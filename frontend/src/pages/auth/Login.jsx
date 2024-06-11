@@ -47,9 +47,7 @@ function Login() {
       const userData = userResponse.data.user;
       setUser(userData);
 
-      toast.success("Login Berhasil!");
-
-      // Redirect to home page after successful login
+      toast.success("Login Berhasil!, mengalihkan ke Beranda");
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);

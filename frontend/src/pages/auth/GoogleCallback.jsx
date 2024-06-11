@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function GoogleCallback() {
@@ -14,6 +14,8 @@ function GoogleCallback() {
     if (token) {
       localStorage.setItem("token", token);
       navigate("/");
+    } else {
+      navigate("/login"); // Navigasi ke halaman login jika tidak ada token
     }
   }, [navigate]);
 
