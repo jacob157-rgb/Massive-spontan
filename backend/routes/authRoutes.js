@@ -2,9 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
 const path = require("path");
-const fs = require("fs");
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
@@ -15,14 +13,14 @@ const router = express.Router();
 
 // Setup Multer Storage
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../public/uploads/avatar"));
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
     );
   },
 });
@@ -63,7 +61,6 @@ passport.use(
 );
 
 // Passport Google Strategy
-// Setup Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -71,27 +68,24 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
-    async (accessToken, refreshToken, profile, cb) => {
+    async function (accessToken, refreshToken, profile, cb) {
       try {
         let user = await User.findOne({ where: { googleId: profile.id } });
 
         if (!user) {
-          // Check if user already exists with the same email
           user = await User.findOne({
             where: { email: profile.emails[0].value },
           });
 
           if (user) {
-            // Update googleId and possibly avatar if not already set
             if (!user.googleId) {
-              await user.update({
+              await User.update({
                 googleId: profile.id,
                 avatar: user.avatar || profile.photos[0].value,
                 email_verified: profile.emails[0].verified,
               });
             }
           } else {
-            // Create new user
             user = await User.create({
               avatar: profile.photos[0].value,
               googleId: profile.id,
@@ -104,14 +98,9 @@ passport.use(
           }
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: "1h",
-        });
-
-        // Token disimpan di local storage
-        cb(null, { token });
+        return cb(null, user);
       } catch (err) {
-        cb(err);
+        return cb(err);
       }
     }
   )
@@ -139,7 +128,6 @@ passport.use(
   )
 );
 
-// Login Route
 router.post(
   "/login",
   passport.authenticate("local", { session: false }),
@@ -157,31 +145,28 @@ router.post(
   }
 );
 
-// Google Login Route
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// Google Callback Route
 router.get(
   "/google/callback",
   passport.authenticate("google", {
+    failureRedirect: "/login",
     session: false,
-    failureRedirect: "/login", // Redirect jika gagal
   }),
   (req, res) => {
+    // Generate JWT token
     const user = req.user;
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Simpan token di local storage
-    res.redirect(`http://localhost:5173/google/callback?token=${token}`);
+    res.redirect(`http://localhost:5173/auth/google/callback?token=${token}`);
   }
 );
 
-// Registration Route with Avatar Upload
 router.post(
   "/register",
   multer({ storage: storage }).single("avatar"),

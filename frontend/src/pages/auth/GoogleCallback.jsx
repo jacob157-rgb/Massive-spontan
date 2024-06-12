@@ -1,25 +1,31 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUser } from "../../../contexts/UserContext";
 
-function GoogleCallback() {
-  const navigate = useNavigate();
+const useGoogleAuthToken = () => {
+  const location = useLocation();
+  const { setToken } = useUser();
 
   useEffect(() => {
-    const getTokenFromUrl = (url) => {
-      const urlParams = new URLSearchParams(new URL(url).search);
-      return urlParams.get("token");
-    };
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
 
-    const token = getTokenFromUrl(window.location.href);
     if (token) {
-      localStorage.setItem("token", token);
-      navigate("/");
-    } else {
-      navigate("/login"); // Navigasi ke halaman login jika tidak ada token
+      setToken(token); // gunakan setToken dari context
     }
+  }, [location, setToken]);
+};
+
+const AuthCallback = () => {
+  const navigate = useNavigate();
+  useGoogleAuthToken();
+
+  useEffect(() => {
+    // Redirect user to the desired page after saving the token
+    navigate("/");
   }, [navigate]);
 
   return <div>Loading...</div>;
-}
+};
 
-export default GoogleCallback;
+export default AuthCallback;

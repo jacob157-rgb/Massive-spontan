@@ -53,7 +53,7 @@ function Cart() {
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <div className="relative w-full my-5 bg-white rounded-sm shadow-lg">
+    <div className="relative w-full px-5 my-5 bg-white rounded-sm shadow-lg">
       <div className="flex items-center gap-3 pt-5 pb-20 justify-evenly">
         <img
           className="w-1/5 h-auto"
@@ -72,8 +72,8 @@ function Cart() {
             {cart.map((item, index) => (
               <div key={index} className="mb-2">
                 <div className="flex items-center justify-between gap-16">
-                  <p className="text-xl font-medium">{item.name}</p>
-                  <p className="text-xl font-medium">28 Juli 2024</p>
+                  <p className="font-medium text-md md:text-xl">{item.name}</p>
+                  <p className="font-medium text-md md:text-xl">28 Juli 2024</p>
                 </div>
                 <div className="flex items-center justify-between gap-16">
                   <p className="text-sm font-semibold">{item.quantity} tiket</p>
@@ -84,8 +84,8 @@ function Cart() {
               </div>
             ))}
             <div className="flex items-center justify-between gap-16 mt-4">
-              <p className="text-xl font-semibold">Total Harga:</p>
-              <p className="text-xl font-semibold">{formatCurrency(totalPrice)}</p>
+              <p className="font-semibold text-md md:text-xl">Total Harga:</p>
+              <p className="font-semibold text-md md:text-xl">{formatCurrency(totalPrice)}</p>
             </div>
 
           </div>

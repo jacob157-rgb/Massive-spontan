@@ -104,7 +104,7 @@ function Explore() {
         </div>
         <div className="flex-1 px-32 pt-12">
           <div className="mb-5">
-            <TextUnderline label="Menampilkan 1 - 234 dari total 1000 public events" />
+            <TextUnderline label="Menampilkan 4 - 234 dari total 1000 public events" />
           </div>
           <div className="grid grid-cols-2 gap-4 pt-3 pl-2">
             <div className="w-full max-w-lg mx-auto lg:mx-0">
@@ -113,35 +113,37 @@ function Explore() {
                 src="/src/assets/img/card/anggun.png"
                 alt=""
               />
-              <h2 className="text-lg font-bold">Title</h2>
-              <p className="text-xs">Date</p>
+              <h2 className="text-lg font-bold">
+                FLASHBACK motion - Enchanting Anggun 2024
+              </h2>
+              <p className="text-xs">28 Juli 2024</p>
             </div>
             <div className="w-full max-w-lg mx-auto lg:mx-0">
               <img
                 className="object-cover w-full h-auto mb-2"
-                src="/src/assets/img/card/anggun.png"
+                src="/src/assets/img/card/dewa.jpg"
                 alt=""
               />
-              <h2 className="text-lg font-bold">Title</h2>
-              <p className="text-xs">Date</p>
+              <h2 className="text-lg font-bold">GOPHORIA - Dewa19</h2>
+              <p className="text-xs">12 Juni 2024</p>
             </div>
             <div className="w-full max-w-lg mx-auto lg:mx-0">
               <img
                 className="object-cover w-full h-auto mb-2"
-                src="/src/assets/img/card/anggun.png"
+                src="/src/assets/img/card/pland.jpg"
                 alt=""
               />
-              <h2 className="text-lg font-bold">Title</h2>
-              <p className="text-xs">Date</p>
+              <h2 className="text-lg font-bold">P-LAND: K-Pop Art Market Vol.3</h2>
+              <p className="text-xs">22 Juni - 23 Juni 2024</p>
             </div>
             <div className="w-full max-w-lg mx-auto lg:mx-0">
               <img
                 className="object-cover w-full h-auto mb-2"
-                src="/src/assets/img/card/anggun.png"
+                src="/src/assets/img/card/evoria.jpg"
                 alt=""
               />
-              <h2 className="text-lg font-bold">Title</h2>
-              <p className="text-xs">Date</p>
+              <h2 className="text-lg font-bold">EVORIA Music Festival 2024</h2>
+              <p className="text-xs">26 Mei 2024</p>
             </div>
           </div>
         </div>

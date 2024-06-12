@@ -24,17 +24,19 @@ function Navigation() {
     if (!name) return ""; // Handle case where name is undefined
     const names = name.split(" ");
     const firstNameInitial = names[0] ? names[0][0] : ""; // Ambil inisial dari nama depan
-    const lastNameInitial = names.length > 1 && names[names.length - 1] ? names[names.length - 1][0] : ""; // Ambil inisial dari nama belakang jika ada
+    const lastNameInitial =
+      names.length > 1 && names[names.length - 1]
+        ? names[names.length - 1][0]
+        : ""; // Ambil inisial dari nama belakang jika ada
     return (firstNameInitial + lastNameInitial).toUpperCase(); // Gabungkan inisial dari nama depan dan belakang
   };
-  
 
   const userInitials = user ? getInitials(user.dataValues.nama) : "";
 
   return (
     <div className="flex flex-col gap-2 md:flex-row md:gap-5">
       <NavItem to="/explore" label="Jelajahi" icon="explore" />
-      <NavItem to="/create-event" label="Buat Event" icon="calendar_add_on" />
+      <NavItem to="/event/add" label="Buat Event" icon="calendar_add_on" />
       {user ? (
         <div className="relative">
           <button

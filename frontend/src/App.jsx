@@ -36,7 +36,7 @@ function App() {
         <Route path="/event/description" element={<Description />} />
         <Route path="/event/facility" element={<Facility />} />
         <Route path="/event/ratings" element={<Ratings />} />
-        <Route path="/google/callback" element={<GoogleCallback />} />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
         {/* Routes accessible only to non-logged-in users */}
         <Route
