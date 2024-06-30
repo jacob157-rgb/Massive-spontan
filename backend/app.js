@@ -49,8 +49,6 @@ app.use(passport.session());
 // );
 app.use(express.static(path.join(__dirname, "public")));
 
-
-
 app.use("/endpoints", (req, res) => {
   res.json(listEndpoints(app));
 });
