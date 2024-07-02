@@ -1,86 +1,64 @@
-const { Event } = require("../database/models");
+import { Event } from "../database/models";
 
-const getEvents = async (req, res) => {
+export const getEvents = async (req, res) => {
   try {
     const eventData = await Event.findAll();
     if (eventData.length > 0) {
-      res
-        .status(200)
-        .json({ message: "Connection successful", data: eventData });
+      res.status(200).json({ message: "Connection successful", data: eventData });
     } else {
       res.status(200).json({ message: "Connection failed", data: [] });
     }
   } catch (error) {
-    res.status(404).json({ message: error });
+    res.status(404).json({ message: error.message });
   }
 };
 
-const getEventsById = async (req, res) => {
+export const getEventsById = async (req, res) => {
   try {
-    const eventData = await Event.findOne({ where: { id: req.params.id } });
-    if (eventData.length > 0) {
-      res
-        .status(200)
-        .json({ message: "Connection successful", data: eventData });
+    const eventData = await Event.findByPk(req.params.id);
+    if (eventData) {
+      res.status(200).json({ message: "Connection successful", data: eventData });
     } else {
-      res.status(200).json({ message: "Connection failed", data: [] });
+      res.status(404).json({ message: "Event not found" });
     }
   } catch (error) {
-    res.status(404).json({ message: error });
+    res.status(404).json({ message: error.message });
   }
 };
 
-const createEvent = async (req, res) => {
+export const createEvent = async (req, res) => {
   try {
     const eventData = await Event.create(req.body);
-    if (eventData.length > 0) {
-      res
-        .status(201)
-        .json({ message: "Event has been created", data: eventData });
-    } else {
-      res.status(200).json({ message: "Connection failed", data: [] });
-    }
-  } catch (error) {
-    res.status(404).json({ message: error });
-  }
-};
-
-const updateEvent = async (req, res) => {
-  try {
-    const EventId = req.params.id;
-    let EventData = await Event.findByPk(EventId);
-    if (!EventData) {
-      return res.status(404).json({ message: "Event not found" });
-    }
-    EventData = await EventData.update(req.body);
-    res
-      .status(200)
-      .json({ message: "Event has been updated", data: EventData });
+    res.status(201).json({ message: "Event has been created", data: eventData });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
-const deleteEvent = async (req, res) => {
+export const updateEvent = async (req, res) => {
   try {
-    const EventId = req.params.id;
-    const EventData = await Event.findByPk(EventId);
-    if (!EventData) {
+    const eventId = req.params.id;
+    let eventData = await Event.findByPk(eventId);
+    if (!eventData) {
       return res.status(404).json({ message: "Event not found" });
     }
-    await EventData.destroy();
-    res
-      .status(200)
-      .json({ message: "Event has been deleted", data: EventData });
+    eventData = await eventData.update(req.body);
+    res.status(200).json({ message: "Event has been updated", data: eventData });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
-module.exports = {
-  getEvents,
-  getEventsById,
-  createEvent,
-  updateEvent,
-  deleteEvent,
+export const deleteEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const eventData = await Event.findByPk(eventId);
+    if (!eventData) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    await eventData.destroy();
+    res.status(200).json({ message: "Event has been deleted", data: eventData });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };

@@ -1,26 +1,27 @@
-const express = require("express");
+import express from 'express';
+import { 
+  getPenyelenggaras, 
+  getPenyelenggarasById, 
+  createPenyelenggara, 
+  updatePenyelenggara, 
+  deletePenyelenggara 
+} from '../controllers/penyelenggaraController.js';
+
 const router = express.Router();
-const {
-  getPenyelenggaras,
-  getPenyelenggarasById,
-  createPenyelenggara,
-  updatePenyelenggara,
-  deletePenyelenggara,
-} = require("../controllers/penyelenggaraController");
 
 // Route untuk mendapatkan semua penyelenggaras
-router.get("/penyelenggaras", getPenyelenggaras);
+router.get('/penyelenggaras', getPenyelenggaras);
 
-// Route untuk mendapatkan tag berdasarkan ID
-router.get("/penyelenggaras/:id", getPenyelenggarasById);
+// Route untuk mendapatkan penyelenggara berdasarkan ID
+router.get('/penyelenggaras/:id', getPenyelenggarasById);
 
-// Route untuk membuat tag baru
-router.post("/penyelenggaras", createPenyelenggara);
+// Route untuk membuat penyelenggara baru
+router.post('/penyelenggaras', createPenyelenggara);
 
-// Route untuk mengupdate tag berdasarkan ID
-router.put("/penyelenggaras/:id", updatePenyelenggara);
+// Route untuk mengupdate penyelenggara berdasarkan ID
+router.put('/penyelenggaras/:id', updatePenyelenggara);
 
-// Route untuk menghapus tag berdasarkan ID
-router.delete("/penyelenggaras/:id", deletePenyelenggara);
+// Route untuk menghapus penyelenggara berdasarkan ID
+router.delete('/penyelenggaras/:id', deletePenyelenggara);
 
-module.exports = router;
+export default router;

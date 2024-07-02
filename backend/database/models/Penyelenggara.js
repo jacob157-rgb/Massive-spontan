@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
 
-module.exports = (sequelize) => {
-  return sequelize.define(
+export default (sequelize) => {
+  const Penyelenggara = sequelize.define(
     "penyelenggara",
     {
       id: {
@@ -57,4 +57,6 @@ module.exports = (sequelize) => {
       freezeTableName: true,
     }
   );
+
+  return Penyelenggara;
 };

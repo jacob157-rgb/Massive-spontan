@@ -1,6 +1,6 @@
-const { CP } = require("../database/models");
+import { CP } from "../database/models";
 
-const getCPs = async (req, res) => {
+export const getCPs = async (req, res) => {
   try {
     const cpData = await CP.findAll();
     res.status(200).json({ message: "Connection successful", data: cpData });
@@ -9,7 +9,7 @@ const getCPs = async (req, res) => {
   }
 };
 
-const getCPById = async (req, res) => {
+export const getCPById = async (req, res) => {
   try {
     const cpData = await CP.findByPk(req.params.id);
     if (!cpData) {
@@ -21,7 +21,7 @@ const getCPById = async (req, res) => {
   }
 };
 
-const createCP = async (req, res) => {
+export const createCP = async (req, res) => {
   try {
     const cpData = await CP.create(req.body);
     res.status(201).json({ message: "CP has been created", data: cpData });
@@ -30,7 +30,7 @@ const createCP = async (req, res) => {
   }
 };
 
-const updateCP = async (req, res) => {
+export const updateCP = async (req, res) => {
   try {
     const cpId = req.params.id;
     let cpData = await CP.findByPk(cpId);
@@ -44,7 +44,7 @@ const updateCP = async (req, res) => {
   }
 };
 
-const deleteCP = async (req, res) => {
+export const deleteCP = async (req, res) => {
   try {
     const CPId = req.params.id;
     const CPData = await CP.findByPk(CPId);
@@ -57,5 +57,3 @@ const deleteCP = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getCPs, getCPById, createCP, updateCP, deleteCP };

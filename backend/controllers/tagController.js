@@ -1,6 +1,6 @@
-const { Tag } = require("../database/models");
+import { Tag } from "../database/models";
 
-const getTags = async (req, res) => {
+export const getTags = async (req, res) => {
   try {
     const tagData = await Tag.findAll();
     res.status(200).json({ message: "Connection successful", data: tagData });
@@ -9,7 +9,7 @@ const getTags = async (req, res) => {
   }
 };
 
-const getTagsById = async (req, res) => {
+export const getTagsById = async (req, res) => {
   try {
     const tagData = await Tag.findByPk(req.params.id);
     if (!tagData) {
@@ -21,7 +21,7 @@ const getTagsById = async (req, res) => {
   }
 };
 
-const createTag = async (req, res) => {
+export const createTag = async (req, res) => {
   try {
     const tagData = await Tag.create(req.body);
     res.status(201).json({ message: "Tag has been created", data: tagData });
@@ -30,7 +30,7 @@ const createTag = async (req, res) => {
   }
 };
 
-const updateTag = async (req, res) => {
+export const updateTag = async (req, res) => {
   try {
     const tagId = req.params.id;
     let tagData = await Tag.findByPk(tagId);
@@ -44,7 +44,7 @@ const updateTag = async (req, res) => {
   }
 };
 
-const deleteTag = async (req, res) => {
+export const deleteTag = async (req, res) => {
   try {
     const tagId = req.params.id;
     const tagData = await Tag.findByPk(tagId);
@@ -57,5 +57,3 @@ const deleteTag = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getTags, getTagsById, createTag, updateTag, deleteTag };

@@ -1,7 +1,10 @@
-const express = require("express");
+import express from 'express';
+import midtransClient from 'midtrans-client';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const router = express.Router();
-const midtransClient = require("midtrans-client");
-require("dotenv").config();
 
 let snap = new midtransClient.Snap({
   isProduction: false,
@@ -9,7 +12,7 @@ let snap = new midtransClient.Snap({
   clientKey: process.env.MIDTRANS_CLIENT_KEY,
 });
 
-router.post("/payment", async (req, res) => {
+router.post('/payment', async (req, res) => {
   const { items } = req.body; // menerima array of items dari request body
 
   // Buat transaction_details dan item_details berdasarkan items dari cart
@@ -22,7 +25,7 @@ router.post("/payment", async (req, res) => {
     id: `${item.name}-${Math.random().toString(36).substr(2, 9)}`, // membuat ID unik untuk tiap item
     name: item.name,
     price: item.price,
-    quantity: item.quantity
+    quantity: item.quantity,
   }));
 
   let parameter = {
@@ -34,9 +37,9 @@ router.post("/payment", async (req, res) => {
     const transaction = await snap.createTransactionToken(parameter);
     res.status(200).json({ transactionToken: transaction });
   } catch (error) {
-    console.error("Error creating transaction:", error);
-    res.status(500).json({ error: "Failed to create transaction" });
+    console.error('Error creating transaction:', error);
+    res.status(500).json({ error: 'Failed to create transaction' });
   }
 });
 
-module.exports = router;
+export default router;

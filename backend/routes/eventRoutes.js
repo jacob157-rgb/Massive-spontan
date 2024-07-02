@@ -1,26 +1,21 @@
-const express = require("express");
-const {
-  getEvents,
-  getEventsById,
-  createEvent,
-  updateEvent,
-  deleteEvent
-} = require("../controllers/eventController.js"); // Import getEvents correctly
+import express from 'express';
+import { getEvents, getEventsById, createEvent, updateEvent, deleteEvent } from '../controllers/eventController.js';
+
 const router = express.Router();
 
 // Route untuk mendapatkan semua Events
-router.get("/events", getEvents);
+router.get('/events', getEvents);
 
-// Route untuk mendapatkan tag berdasarkan ID
-router.get("/events/:id", getEventsById);
+// Route untuk mendapatkan Event berdasarkan ID
+router.get('/events/:id', getEventsById);
 
-// Route untuk membuat tag baru
-router.post("/events", createEvent);
+// Route untuk membuat Event baru
+router.post('/events', createEvent);
 
-// Route untuk mengupdate tag berdasarkan ID
-router.put("/events/:id", updateEvent);
+// Route untuk mengupdate Event berdasarkan ID
+router.put('/events/:id', updateEvent);
 
-// Route untuk menghapus tag berdasarkan ID
-router.delete("/events/:id", deleteEvent);
+// Route untuk menghapus Event berdasarkan ID
+router.delete('/events/:id', deleteEvent);
 
-module.exports = router;
+export default router;

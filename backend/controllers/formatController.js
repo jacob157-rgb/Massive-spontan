@@ -1,6 +1,6 @@
-const { Format } = require("../database/models");
+import { Format } from "../database/models";
 
-const getFormats = async (req, res) => {
+export const getFormats = async (req, res) => {
   try {
     const formatData = await Format.findAll();
     res.status(200).json({ message: "Connection successful", data: formatData });
@@ -9,7 +9,7 @@ const getFormats = async (req, res) => {
   }
 };
 
-const getFormatsById = async (req, res) => {
+export const getFormatsById = async (req, res) => {
   try {
     const formatData = await Format.findByPk(req.params.id);
     if (!formatData) {
@@ -21,7 +21,7 @@ const getFormatsById = async (req, res) => {
   }
 };
 
-const createFormat = async (req, res) => {
+export const createFormat = async (req, res) => {
   try {
     const formatData = await Format.create(req.body);
     res.status(201).json({ message: "Format has been created", data: formatData });
@@ -30,7 +30,7 @@ const createFormat = async (req, res) => {
   }
 };
 
-const updateFormat = async (req, res) => {
+export const updateFormat = async (req, res) => {
   try {
     const formatId = req.params.id;
     let formatData = await Format.findByPk(formatId);
@@ -44,7 +44,7 @@ const updateFormat = async (req, res) => {
   }
 };
 
-const deleteFormat = async (req, res) => {
+export const deleteFormat = async (req, res) => {
   try {
     const formatId = req.params.id;
     const formatData = await Format.findByPk(formatId);
@@ -57,5 +57,3 @@ const deleteFormat = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getFormats, getFormatsById, createFormat, updateFormat, deleteFormat };

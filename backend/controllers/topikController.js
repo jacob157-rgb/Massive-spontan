@@ -1,6 +1,6 @@
-const { Topik } = require("../database/models");
+import { Topik } from "../database/models";
 
-const getTopiks = async (req, res) => {
+export const getTopiks = async (req, res) => {
   try {
     const topikData = await Topik.findAll();
     res.status(200).json({ message: "Connection successful", data: topikData });
@@ -9,7 +9,7 @@ const getTopiks = async (req, res) => {
   }
 };
 
-const getTopikById = async (req, res) => {
+export const getTopikById = async (req, res) => {
   try {
     const topikData = await Topik.findByPk(req.params.id);
     if (!topikData) {
@@ -21,7 +21,7 @@ const getTopikById = async (req, res) => {
   }
 };
 
-const createTopik = async (req, res) => {
+export const createTopik = async (req, res) => {
   try {
     const topikData = await Topik.create(req.body);
     res.status(201).json({ message: "Topik has been created", data: topikData });
@@ -30,7 +30,7 @@ const createTopik = async (req, res) => {
   }
 };
 
-const updateTopik = async (req, res) => {
+export const updateTopik = async (req, res) => {
   try {
     const topikId = req.params.id;
     let topikData = await Topik.findByPk(topikId);
@@ -44,7 +44,7 @@ const updateTopik = async (req, res) => {
   }
 };
 
-const deleteTopik = async (req, res) => {
+export const deleteTopik = async (req, res) => {
   try {
     const topikId = req.params.id;
     const topikData = await Topik.findByPk(topikId);
@@ -57,5 +57,3 @@ const deleteTopik = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getTopiks, getTopikById, createTopik, updateTopik, deleteTopik };

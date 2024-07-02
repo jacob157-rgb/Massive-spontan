@@ -1,26 +1,28 @@
-const express = require("express");
-const router = express.Router();
-const {
+// routes/tiketsRouter.js
+import express from 'express';
+import {
   getTikets,
   getTiketById,
   createTiket,
   updateTiket,
   deleteTiket,
-} = require("../controllers/tiketController");
+} from '../controllers/tiketController.js';
 
-// Route untuk mendapatkan semua tags
-router.get("/tikets", getTikets);
+const router = express.Router();
 
-// Route untuk mendapatkan tag berdasarkan ID
-router.get("/tikets/:id", getTiketById);
+// Route to get all tikets
+router.get('/tikets', getTikets);
 
-// Route untuk membuat tag baru
-router.post("/tikets", createTiket);
+// Route to get tiket by ID
+router.get('/tikets/:id', getTiketById);
 
-// Route untuk mengupdate tag berdasarkan ID
-router.put("/tikets/:id", updateTiket);
+// Route to create a new tiket
+router.post('/tikets', createTiket);
 
-// Route untuk menghapus tag berdasarkan ID
-router.delete("/tikets/:id", deleteTiket);
+// Route to update tiket by ID
+router.put('/tikets/:id', updateTiket);
 
-module.exports = router;
+// Route to delete tiket by ID
+router.delete('/tikets/:id', deleteTiket);
+
+export default router;

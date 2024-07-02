@@ -1,21 +1,25 @@
-const express = require("express");
-const session = require("express-session");
-const cors = require("cors");
-const listEndpoints = require("express-list-endpoints");
-const passport = require("passport");
-const path = require("path");
-const authRoutes = require("./routes/authRoutes");
-const eventRoutes = require("./routes/eventRoutes");
-const tagRoutes = require("./routes/tagRoutes");
-const tiketRoutes = require("./routes/tiketRoutes");
-const topikRoutes = require("./routes/topikRoutes");
-const formatRoutes = require("./routes/formatRoutes");
-const rekeningRoutes = require("./routes/rekeningRoutes");
-const penyelenggaraRoutes = require("./routes/penyelenggaraRoutes");
-const cpRoutes = require("./routes/cpRoutes");
-const protectedRoutes = require("./routes/protectedRoutes");
-const midtransRoutes = require("./routes/midtransRoutes");
-const { sequelize } = require("./database/models");
+import express from "express";
+import session from "express-session";
+import cors from "cors";
+import listEndpoints from "express-list-endpoints";
+import passport from "passport";
+import path from "path";
+import { fileURLToPath } from "url";
+import authRoutes from "./routes/authRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
+import tagRoutes from "./routes/tagRoutes.js";
+import tiketRoutes from "./routes/tiketRoutes.js";
+import topikRoutes from "./routes/topikRoutes.js";
+import formatRoutes from "./routes/formatRoutes.js";
+import rekeningRoutes from "./routes/rekeningRoutes.js";
+import penyelenggaraRoutes from "./routes/penyelenggaraRoutes.js";
+import cpRoutes from "./routes/cpRoutes.js";
+import protectedRoutes from "./routes/protectedRoutes.js";
+import midtransRoutes from "./routes/midtransRoutes.js";
+import { sequelize } from "./database/models/index.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -42,11 +46,7 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve static files from the uploads directory
-// app.use(
-//   "/uploads",
-//   express.static(path.join(__dirname, "public/uploads/avatar"))
-// );
+// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/endpoints", (req, res) => {

@@ -1,6 +1,6 @@
-const { Rekening } = require("../database/models");
+import { Rekening } from "../database/models";
 
-const getRekenings = async (req, res) => {
+export const getRekenings = async (req, res) => {
   try {
     const rekeningData = await Rekening.findAll();
     res.status(200).json({ message: "Connection successful", data: rekeningData });
@@ -9,7 +9,7 @@ const getRekenings = async (req, res) => {
   }
 };
 
-const getRekeningsById = async (req, res) => {
+export const getRekeningsById = async (req, res) => {
   try {
     const rekeningData = await Rekening.findByPk(req.params.id);
     if (!rekeningData) {
@@ -21,7 +21,7 @@ const getRekeningsById = async (req, res) => {
   }
 };
 
-const createRekening = async (req, res) => {
+export const createRekening = async (req, res) => {
   try {
     const rekeningData = await Rekening.create(req.body);
     res.status(201).json({ message: "Rekening has been created", data: rekeningData });
@@ -30,7 +30,7 @@ const createRekening = async (req, res) => {
   }
 };
 
-const updateRekening = async (req, res) => {
+export const updateRekening = async (req, res) => {
   try {
     const rekeningId = req.params.id;
     let rekeningData = await Rekening.findByPk(rekeningId);
@@ -44,7 +44,7 @@ const updateRekening = async (req, res) => {
   }
 };
 
-const deleteRekening = async (req, res) => {
+export const deleteRekening = async (req, res) => {
   try {
     const rekeningId = req.params.id;
     const rekeningData = await Rekening.findByPk(rekeningId);
@@ -57,5 +57,3 @@ const deleteRekening = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getRekenings, getRekeningsById, createRekening, updateRekening, deleteRekening };

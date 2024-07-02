@@ -1,27 +1,23 @@
-const { Sequelize } = require("sequelize");
-const UserModel = require("./Users");
-const FormatModel = require("./Format");
-const TopikModel = require("./Topik");
-const TagModel = require("./Tag");
-const CPModel = require("./CP");
-const RekeningModel = require("./Rekening");
-const PenyelenggaraModel = require("./Penyelenggara");
-const EventModel = require("./Event");
-const TiketModel = require("./Tiket");
-const config = require("../../config/config")[
-  process.env.NODE_ENV || "development"
-];
+// db/index.js
+import { Sequelize } from "sequelize";
+import UserModel from "./Users.js";
+import FormatModel from "./Format.js";
+import TopikModel from "./Topik.js";
+import TagModel from "./Tag.js";
+import CPModel from "./CP.js";
+import RekeningModel from "./Rekening.js";
+import PenyelenggaraModel from "./Penyelenggara.js";
+import EventModel from "./Event.js";
+import TiketModel from "./Tiket.js";
+import config from "../../config/config.js";
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    port: config.port,
-    dialect: config.dialect,
-  }
-);
+const { database, username, password, host, port, dialect } = config[process.env.NODE_ENV || "development"];
+
+const sequelize = new Sequelize(database, username, password, {
+  host,
+  port,
+  dialect,
+});
 
 const User = UserModel(sequelize);
 const Format = FormatModel(sequelize);
@@ -61,7 +57,7 @@ Tag.belongsToMany(Event, { through: "TagEvent", foreignKey: "id_tag" });
 Event.belongsToMany(Tiket, { through: "TiketEvent", foreignKey: "id_event" });
 Tiket.belongsToMany(Event, { through: "TiketEvent", foreignKey: "id_tiket" });
 
-module.exports = {
+export {
   sequelize,
   User,
   Format,

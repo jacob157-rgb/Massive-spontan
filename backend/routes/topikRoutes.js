@@ -1,26 +1,28 @@
-const express = require("express");
-const router = express.Router();
-const {
+// routes/topiksRouter.js
+import express from 'express';
+import {
   getTopiks,
   getTopikById,
   createTopik,
   updateTopik,
   deleteTopik,
-} = require("../controllers/topikController");
+} from '../controllers/topikController.js';
 
-// Route untuk mendapatkan semua tags
-router.get("/topiks", getTopiks);
+const router = express.Router();
 
-// Route untuk mendapatkan tag berdasarkan ID
-router.get("/topiks/:id", getTopikById);
+// Route to get all topiks
+router.get('/topiks', getTopiks);
 
-// Route untuk membuat tag baru
-router.post("/topiks", createTopik);
+// Route to get topik by ID
+router.get('/topiks/:id', getTopikById);
 
-// Route untuk mengupdate tag berdasarkan ID
-router.put("/topiks/:id", updateTopik);
+// Route to create a new topik
+router.post('/topiks', createTopik);
 
-// Route untuk menghapus tag berdasarkan ID
-router.delete("/topiks/:id", deleteTopik);
+// Route to update topik by ID
+router.put('/topiks/:id', updateTopik);
 
-module.exports = router;
+// Route to delete topik by ID
+router.delete('/topiks/:id', deleteTopik);
+
+export default router;

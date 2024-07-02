@@ -1,26 +1,28 @@
-const express = require("express");
-const router = express.Router();
-const {
+// routes/tagsRouter.js
+import express from 'express';
+import {
   getTags,
   getTagsById,
   createTag,
   updateTag,
   deleteTag,
-} = require("../controllers/TagController");
+} from '../controllers/tagController.js';
 
-// Route untuk mendapatkan semua tags
-router.get("/tags", getTags);
+const router = express.Router();
 
-// Route untuk mendapatkan tag berdasarkan ID
-router.get("/tags/:id", getTagsById);
+// Route to get all tags
+router.get('/tags', getTags);
 
-// Route untuk membuat tag baru
-router.post("/tags", createTag);
+// Route to get tag by ID
+router.get('/tags/:id', getTagsById);
 
-// Route untuk mengupdate tag berdasarkan ID
-router.put("/tags/:id", updateTag);
+// Route to create a new tag
+router.post('/tags', createTag);
 
-// Route untuk menghapus tag berdasarkan ID
-router.delete("/tags/:id", deleteTag);
+// Route to update tag by ID
+router.put('/tags/:id', updateTag);
 
-module.exports = router;
+// Route to delete tag by ID
+router.delete('/tags/:id', deleteTag);
+
+export default router;

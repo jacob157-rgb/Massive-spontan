@@ -1,6 +1,6 @@
-const { Penyelenggara } = require("../database/models");
+import { Penyelenggara } from "../database/models";
 
-const getPenyelenggaras = async (req, res) => {
+export const getPenyelenggaras = async (req, res) => {
   try {
     const penyelenggaraData = await Penyelenggara.findAll();
     res.status(200).json({ message: "Connection successful", data: penyelenggaraData });
@@ -9,7 +9,7 @@ const getPenyelenggaras = async (req, res) => {
   }
 };
 
-const getPenyelenggarasById = async (req, res) => {
+export const getPenyelenggarasById = async (req, res) => {
   try {
     const penyelenggaraData = await Penyelenggara.findByPk(req.params.id);
     if (!penyelenggaraData) {
@@ -21,7 +21,7 @@ const getPenyelenggarasById = async (req, res) => {
   }
 };
 
-const createPenyelenggara = async (req, res) => {
+export const createPenyelenggara = async (req, res) => {
   try {
     const penyelenggaraData = await Penyelenggara.create(req.body);
     res.status(201).json({ message: "Penyelenggara has been created", data: penyelenggaraData });
@@ -30,7 +30,7 @@ const createPenyelenggara = async (req, res) => {
   }
 };
 
-const updatePenyelenggara = async (req, res) => {
+export const updatePenyelenggara = async (req, res) => {
   try {
     const penyelenggaraId = req.params.id;
     let penyelenggaraData = await Penyelenggara.findByPk(penyelenggaraId);
@@ -44,7 +44,7 @@ const updatePenyelenggara = async (req, res) => {
   }
 };
 
-const deletePenyelenggara = async (req, res) => {
+export const deletePenyelenggara = async (req, res) => {
   try {
     const penyelenggaraId = req.params.id;
     const penyelenggaraData = await Penyelenggara.findByPk(penyelenggaraId);
@@ -57,5 +57,3 @@ const deletePenyelenggara = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-module.exports = { getPenyelenggaras, getPenyelenggarasById, createPenyelenggara, updatePenyelenggara, deletePenyelenggara };
